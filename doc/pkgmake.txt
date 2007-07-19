@@ -1,0 +1,129 @@
+===============================================================================
+Debian/RPM Paket Builder        (c) 2007 by Itzchak Rehberg (devel@izzysoft.de)
+-------------------------------------------------------------------------------
+$Id$
+-------------------------------------------------------------------------------
+Create RPM SPEC files and build *.deb / *.rpm out of those
+===============================================================================
+
+Contents
+--------
+
+1) Copyright and warranty
+2) Requirements
+3) Limitations
+4) What is pkgmake, and what does it do?
+5) Installation
+6) Usage
+7) Additional information
+
+===============================================================================
+
+1) Copyright and Warranty
+-------------------------
+
+This little program is (c)opyrighted by Andreas Itzchak Rehberg
+(devel@izzysoft.de) and protected by the GNU Public License Version 2 (GPL).
+For details on the License see the file LICENSE in this directory. The
+contents of this archive may only be distributed all together.
+
+===============================================================================
+
+2) Requirements
+---------------
+
+The requirements depend on your intended use of this script. If you simply want
+to generate the SPEC files, you only need the Bash shell. If you want to build
+real packages, you need the package building stuff - i.e. rpmbuild to build RPM
+packages, and/or debbuild (and its dependencies) to build Debian packages.
+While rpmbuild may ship with your distribution, debbuild can be downloaded from
+the authors website at http://www.deepnet.cx/debbuild/
+
+===============================================================================
+
+3) Limitations
+---------------
+
+We do not guarantee to build packages 100% fulfilling all specifications as
+given by the Debian (or RPM) community. These (pkgmake and debbuild) are just
+wrapper scripts we wrote for ourselves and found useful, since they made
+packaging a lot easier for us. Don't blame us if you want to send packages
+you built with these scripts to some repository and they get refused - we did
+not aim at 100% compatibility but at easy handling!
+
+Moreover: Error checking must for sure be much more improved...
+
+===============================================================================
+
+4) What is pkgmake, and what does it do?
+----------------------------------------
+
+pkgmake is just a simple shell script to create RPM *.spec files and per
+default (which is optionally) calls the packager rpmbuild/debbuild to create
+the package. For not-too-complex packages, a single spec template can serve
+for all packages to build, since most information (as e.g. packager, target
+architecture) do not change (and thus are hold as default values in the
+configuration) - while others (like package name and version) can be passed
+to the script on the command line.
+
+Its target is to be simple to use, and save the developer from the need to
+study all the details and specifications concerning the package management
+with RPM and Debian. Instead, in most cases you will be able to build the RPM
+and the DEB package with the same SPEC file and configuration.
+
+===============================================================================
+
+5) Installation and configuration
+---------------------------------
+
+Unpack the tarball (you probably already did so when you're reading this).
+Check the path specifications at the top of the Makefile (they should be fine
+for Ubuntu and most likely other Debian derivates), and finally simply run
+"sudo make install".
+
+Alternatively, put the pkgmake executable somewhere in your path, and the
+example.tpl to your SPEC directory - and edit the settings at the top of the
+pkgmake file to reflect your configuration. Put the pkgmake.conf in the /etc
+dir - or copy it to your home directory and rename it to .pkgmakerc
+
+Configuration can be done in either ~/.pkgmakerc, /etc/pkgmake.conf or the
+head of the pkgmake executable - which is also the order of preference: pkgmake
+first takes the configuration inside the script itself, and then looks for
+~/.pkgmakerc - if found, this is used. If it is not found, it looks for the
+/etc/pkgmake.conf and uses this file (if found) to overwrite the default
+settings.
+
+===============================================================================
+
+6) Usage
+--------
+
+For a quick start: Simply run pkgmake without parameters to see its syntax
+plus some examples of its usage. Usually, this should provide you with enough
+information to get started. However, some hints may be needed and useful.
+
+If you are happy with the "lazy setup" of the example.tpl shipped with this
+distribution, there's nothing more to tell you concerning the SPEC file
+templates. Otherwise, I recommend you to have a look at the specfile.txt in
+this directory to read some hints. So far about the SPEC files.
+
+What command line options are available, you can find out by invoking the
+script without any parameters - so I won't explain that here. However, some
+hints may be useful:
+Some parameters you have to put in quotes (i.e. everything that mentions
+"space separated list"). Most times, when using forward slashes you have
+to escape them, e.g. "-conf '\/some\/conffile' instead of "/some/conffile"
+(an exception is the "-descfile" parameter), which is due to their use in
+regular expressions (this may change with a future release, but for now it is
+this way). Enclosing these statements with single quotes prevents the shell
+from modifications to them, so this is recommended.
+
+After successfully installing the package, more information can be found
+calling "man pkgmake", "man pkgmake.conf" and "man pkgmake.tpl".
+
+===============================================================================
+
+7) Additional Information
+-------------------------
+
+Will be added soon :)

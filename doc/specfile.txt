@@ -1,0 +1,29 @@
+===============================================================================
+Debian/RPM Paket Builder        (c) 2007 by Itzchak Rehberg (devel@izzysoft.de)
+-------------------------------------------------------------------------------
+$Id$
+-------------------------------------------------------------------------------
+Create RPM SPEC files and build *.deb / *.rpm out of those
+===============================================================================
+
+Hints for the SPEC file template:
+=================================
+
+* To add an entire directory including all subdirs and files, simply add the
+  (top) directory in the %files section *BEFORE* the %config keyword, e.g.:
+
+  %files
+  %defattr(-,www-data,www-data)
+  /var/www/phpdivelog
+  %config /var/www/phpdivelog/inc/config.inc
+
+* Lazy to add any file locations? Simply add the __DIR__ placeholder in the
+  %files section. This will be replaced by a complete file list (all files
+  of your distribution - before using this, read the corresponding part on
+  the manpage - "man pkgmake.tpl" - carefully!). Example:
+
+  %files
+  %defattr(-,www-data,www-data)
+  __DIR__
+  %config /var/www/phpdivelog/inc/config.inc
+
