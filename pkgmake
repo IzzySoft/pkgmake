@@ -60,11 +60,11 @@ function help {
   clear
   echo
   echo -e "${blue}============================================================================"
-  echo "Debian Paket Builder        (c) 2007 by Itzchak Rehberg (devel@izzysoft.de)"
+  echo "Debian Paket Builder v0.1.1 (c) 2007 by Itzchak Rehberg (devel@izzysoft.de)"
   echo -e "----------------------------------------------------------------------------$NC"
   echo This script is a wrapper to debbuild, which is a wrapper to the Debian
   echo package building binaries. It shall simplify the build process for
-  echo developers by automatizing mosts steps.
+  echo developers by automatizing mosts steps. Distributed under the terms of the GPL.
   echo -e "${blue}----------------------------------------------------------------------------$NC"
   echo "Syntax: ${SCRIPT} <PackageName> <Version> [Options]"
   echo "  Parameter:"
