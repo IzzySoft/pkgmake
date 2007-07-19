@@ -1,0 +1,129 @@
+.TH "PKGMAKE.TPL" "5" "19 July 2007"
+.SH "NAME" 
+pkgmake.tpl \- Template files for \fBpkgmake\fR, which creates RPM spec
+files and builds *.rpm/*.deb packages
+.SH "DESCRIPTION" 
+.PP 
+This manual page documents the replacement variables which can be used in the
+pkgmake template files. For a description of what pkgmake does, see the pkgmake(8)
+manpage. For general issues e.g. on the syntax of SPEC files (which will be
+generated from these templates), see the "SEE ALSO" section below.
+
+.SH "SETTINGS" 
+.PP 
+All replacement variables have two leading and two trailing underscores.
+Nothing else will be replaced in the files, and thus must apply to the syntax
+of RPM SPEC files. The entire template file must produce a valid SPEC file
+after replacements have been done.
+
+For most of the variables (if not mentioned otherwise) applies: If there is no
+replacement specified, they will be replaced by an empty string (i.e. the
+variable will simply be removed, but the remaining line stays intact). This
+may lead to invalid SPEC files in case of essential variables, so take care.
+
+.PP
+The following replacement variables are available in pkgmake template files: 
+
+.IP "\fB__BUILDARCH__\fP" 10
+Stands for the target architecture the package is intended for (i.e. i386,
+athlon, noarch, etc.). Will be replaced by the configuration variable
+$BUILDARCH, which can be overridden by the -a command line switch.
+ 
+.IP "\fB__CONFIG__\fP" 10
+With the -conf parameter, the user can specify a list of files to be treated as
+configuration files. They will be placed here with a leading "%conf", e.g.
+
+%conf /etc/sample.conf
+ 
+.IP "\fB__DESCRIPTION__\fP" 10
+Will be replaced by the long description of the package (when specified, see
+the -descfile command line parameter) - or the summary otherwise.
+ 
+.IP "\fB__DIR__\fP" 10
+Gets replaced by a complete list of files from your source directory. This is
+only useful if the given source already reflects the target file system (i.e.
+a file which should be placed as "/etc/file.conf" must be in "etc/file.conf",
+relativ to the packages root directory, and so on). If your source provides a
+makefile with an install target, this is usually \fBNOT\fP the case, and you
+must \fBNOT\fP use the __DIR__ variable.
+ 
+.IP "\fB__GROUP__\fP" 10
+Gets replaced by the $GROUP variable (or what you specified with the -g
+command line parameter).
+ 
+.IP "\fB__LICENSE__\fP" 10
+Will be replaced with the $LICENSE (-l) - usually GPL :)
+ 
+.IP "\fB__NAME__\fP" 10
+This is the placeholder for the package name you specify as the first
+parameter on the command line.
+
+.IP "\fB__PACKAGER__\fP" 10
+The $PACKAGER variable (or -p paramter value) goes here.
+ 
+.IP "\fB__PROVIDES__\fP" 10
+Using the -prov command line switch, you can pass a list of items your
+package provides. These will be split and each provides will be placed on a
+separate line, like
+
+Provides: provides1
+Provides: provides2
+
+If you did not pass the -prov parameter, the entire line will be removed.
+ 
+.IP "\fB__RELEASE__\fP" 10
+Will be replaced with the $RELEASE configuration variable, or what you
+specified using the -r command line switch.
+ 
+.IP "\fB__REQUIRES__\fP" 10
+The opposite to __PROVIDES__ (see above for details). With -req you can manually
+provide a list of dependencies. Note however, that rpmbuild as well as debbuild
+are able to automatically determine those, if you did not enter the line
+
+AutoReqProv: no
+
+in your SPEC file (template). However, in some cases you may want to add to the
+automatic dependencies, or just handle them yourself completely - so you can use
+this replacement variable.
+ 
+.IP "\fB__SUMMARY__\fP" 10
+A short summary for your package can (and should, if your template uses this
+variable) be passed to pkgmake using the -s command line switch. This should
+give a brief explanation of what your package is - and will go here.
+ 
+.IP "\fB__VENDOR__\fP" 10
+See __PACKAGER__ - but here it is the author of the code.
+ 
+.IP "\fB__VENDORURL__\fP" 10
+If $VENDORURL is set by your config, or you passed it with -u, this will go
+here as
+
+URL: <what://you.configured.or/passed>
+
+Otherwise, the line will be removed.
+ 
+.IP "\fB__VERSION__\fP" 10
+This is to be replaced by the version - the second parameter you have to pass
+to the pkgmake executable on the command line.
+ 
+
+.SH "SEE ALSO" 
+.PP 
+pkgmake(8)
+
+pkgmake.conf(5)
+
+http://www.rpm.org/
+
+http://www.tu-chemnitz.de/docs/lindocs/RPM/node16.html
+
+http://docs.fedoraproject.org/drafts/rpm-guide-en/
+.SH "AUTHOR" 
+.PP 
+This manual page was written by Andreas Itzchak Rehberg (devel@izzysoft.de),
+the author of the program. Permission is granted to copy, distribute and/or
+modify this document under the terms of the GNU General Public License,
+Version 2.
+
+More information may be found on the authors website, http://www.izzysoft.de/
+ 
