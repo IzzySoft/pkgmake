@@ -1,0 +1,70 @@
+.TH "PKGMAKE.CONF" "5" "19 July 2007"
+.SH "NAME" 
+pkgmake.conf \- Configuration file for \fBpkgmake\fR, which creates RPM spec
+files and builds *.rpm/*.deb packages
+.SH "DESCRIPTION" 
+.PP 
+This manual page documents the options that can be set in the pkgmake.conf
+configuration file. For a description of what pkgmake does, see the pkgmake(8)
+manpage.
+
+.SH "SETTINGS" 
+.PP 
+The syntax of options is OPTION=value. The pkgmake.conf must be executable,
+since it will be sourced into the pkgmake main script.
+
+.PP
+The following settings are available in pkgmake.conf: 
+
+.IP "\fBBUILDDEB\fP" 10
+Set this to the top directory of your build environment. For RPM, this is
+usually /usr/src/rpm (or /usr/src/redhat on RedHat/CentOS). For the use of
+debbuild, create a symlink /usr/src/debian pointing to /usr/src/rpm, or make
+a copy of /usr/src/rpm as /usr/src/debian - debbuild is looking at that
+location. Optionally enclose the directory name in quotes for the sake of
+spaces in it.
+
+.IP "\fBDEBBUILD\fP" 10 
+Name of the debbuild executable, optionally with path. To build *.rpm files,
+this would be "rpmbuild".
+
+.IP "\fBVENDOR\fP" 10 
+This is usually the author of the software. Use the syntax "John Doe <john@doe.com>",
+i.e. "Name <email@address>" for this field - or rpmbuild will break.
+
+.IP "\fBVENDORURL\fP" 10
+The website of the author. Make sure to "escape" all slashes here, since the
+string is used in a regular expression as-is. Example: "http:\\/\\/domain.com\\/"
+ 
+.IP "\fBPACKAGER\fP" 10 
+Who made the package. See VENDOR for syntax.
+
+.IP "\fBBUILDARCH\fP" 10 
+Target build architecture, e.g. i386, athlon, noarch
+
+.IP "\fBLICENSE\fP" 10 
+License of this software. Usually GPL
+ 
+.IP "\fBRELEASE\fP" 10 
+An optional release suffix. Shouldn't be a too long string.
+ 
+.IP "\fBGROUP\fP" 10 
+Software group for e.g. the menu. On Ubuntu, this usually starts with the
+repository (e.g. "universe"). Again, escape all forward slashes. Examples
+are: "universe\\/Graphic" (Ubuntu/Debian) or "Applications\\/Graphic" (RPM).
+ 
+
+.SH "SEE ALSO" 
+.PP 
+pkgmake(8)
+
+pkgmake.tpl(5)
+.SH "AUTHOR" 
+.PP 
+This manual page was written by Andreas Itzchak Rehberg (devel@izzysoft.de),
+the author of the program. Permission is granted to copy, distribute and/or
+modify this document under the terms of the GNU General Public License,
+Version 2.
+
+More information may be found on the authors website, http://www.izzysoft.de/
+ 
