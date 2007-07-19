@@ -51,7 +51,7 @@ mv ${RPM_BUILD_ROOT}/usr/share/doc/pkgmake/* ${RPM_BUILD_ROOT}/usr/share/doc/
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -rf $RPM_BUILD_ROOT
 
 %post
-ln -s /usr/src/redhat /usr/src/debian
+ln -s /usr/src/rpm /usr/src/debian
 
 %preun
 
@@ -62,7 +62,7 @@ ln -s /usr/src/redhat /usr/src/debian
 %doc pkgmake.txt
 %doc LICENSE
 %doc specfile.txt
-%attr(755,root,root) %config /etc/pkgmake.conf
+%config /etc/pkgmake.conf
 %attr(755,root,root) /usr/bin/pkgmake
 /usr/share/man/man5/pkgmake.conf.5
 /usr/share/man/man5/pkgmake.tpl.5
