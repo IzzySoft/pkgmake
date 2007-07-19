@@ -1,0 +1,322 @@
+#!/bin/bash
+###############################################################################
+# Debian Paket Builder
+# A wrapper to debbuild
+#------------------------------------------------------------------------------
+# This script is intended to fill a little gap in debbuild, which does not
+# interpret the %dir tag. As a side-effect, it eases package creation for
+# programmers who don't want to care about packaging too much - but still
+# want to provide packages for their users. Thus, it automats package creation.
+#
+# Requirements are the same as for debbuild, which the script finally calls.
+# Of course, you may modify the settings at the top of the script to call
+# rpmbuild instead - so you can use it to build RPMs as well (just modify
+# BUILDDEB to point to "/usr/src/rpm" (or "/usr/share/redhat, whatever the
+# location is with your distribution), plus DEBBUILD to point to "rpmbuild",
+# and you are done.
+#
+# To use the script finally, you need to set up a template SPEC file. In there,
+# you *can* use 2 placeholders which are filled by this script:
+# __VERSION__ will be replaced with the release (cmdline option "-r")
+# __DIR__     will be replaced with the complete filelist of your distribution
+# Setup the distribution directory (i.e. make a copy, clean up all CVS/SVN
+# files, re-arrange files if necessary - e.g. the %doc files need to be
+# under usr/share/doc/), and run the script. The result will be:
+# - a tarball in $BUILDDEB/SOURCES
+# - a source package in $BUILDDEB/SDEBS (or $BUILDDEB/SRPMS)
+# - a binary package in the directory for the corresponding architecure
+###############################################################################
+# $Id$
+
+#===============================================[ Setup Script environment ]===
+#---------------------------------------------------------------[ Settings ]---
+BUILDDEB="/usr/src/debian"       	# Where the packages are located
+DEBBUILD="debbuild"			# debbuild executable
+# Some defaults:
+VENDOR="root <root@`hostname`>" 	# Who wrote it
+VENDORURL=""		  		# Default vendor URL (Escape slashes!)
+PACKAGER="root <root@`hostname`>" 	# Who made the package
+BUILDARCH="noarch"                      # Target Architecture (noarch,i386,...)
+LICENSE="GPL"                           # License of the program
+RELEASE="1"                        	# Release of this version
+GROUP="universe\/Misc"              	# Repository group this goes to
+
+# Don't change anything below this line except you know what you're doing
+BINDIR=${0%/*}				# where this script resides
+PREFIX="/"				# absolute path needed for *.deb
+TMPFILE="/tmp/flist.$$"			# we need some tempfile
+[ "`whoami`" != "root" ] && SUDO=sudo	# if executor is not root, we sudo
+SPECONLY=0                              # we not only create the spec by default
+
+#-----------------------------------------------------------------[ Colors ]---
+red='\e[0;31m'
+blue='\e[0;34m'
+blink='\E[5m'
+NC='\e[0m'              # No Color
+
+#-----------------------------------------------------------[ Display help ]---
+function help {
+  SCRIPT=${0##*/}
+  clear
+  echo
+  echo -e "${blue}============================================================================"
+  echo "Debian Paket Builder        (c) 2007 by Itzchak Rehberg (devel@izzysoft.de)"
+  echo -e "----------------------------------------------------------------------------$NC"
+  echo This script is a wrapper to debbuild, which is a wrapper to the Debian
+  echo package building binaries. It shall simplify the build process for
+  echo developers by automatizing mosts steps.
+  echo -e "${blue}----------------------------------------------------------------------------$NC"
+  echo "Syntax: ${SCRIPT} <PackageName> <Version> [Options]"
+  echo "  Parameter:"
+  echo "     <PackageName>              Name of the package"
+  echo "     <Version>                  Version of this release"
+  echo "  Options (overwrite defaults):"
+  echo "     -a <author/vendor>         Vendor for this package (default: ${VENDOR})"
+  echo "     -b <build architecture>    Target architecture (default: ${BUILDARCH})"
+  echo "     -c <changelog file>        Filename of changelog file"
+  echo "     -conf <conffiles>          Space separated list of files to thread as %config"
+  echo "     -d <directory root>        Where to take the files from"
+  echo "     -descfile <file>           Filename of the file holding the long desc"
+  echo "     -g <group>                 Group for this package (escape slashes!)"
+  echo "     -l <license>               License of the program (default: ${LICENSE})"
+  echo "     -p <packager>              Packager for this package (default: ${PACKAGER})"
+  echo "     -prov <provides>           Space separated list of provides"
+  echo "     -r <release>               Release of this version (default: ${RELEASE})"
+  echo "     -req <requires>            Space separated list of required packages"
+  echo "     -q	                        Be Quiet"
+  echo "     -s <summary>               Short description (put in quotes!)"
+  echo "     -speconly                  Only create the SPEC file and exit, no build"
+  echo "     -t <TemplateFile>          Template file (default: <PackageName>.tpl)"
+  echo "     -u <vendor URL>            Vendor URL for this package (default: ${VENDORURL})"
+  echo
+  echo "  Example: Build a *.deb for dummy v0.1.1, files are already in"
+  echo "  ${BUILDDEB}/BUILD/dummy-0.1.1"
+  echo "    ${SCRIPT} dummy 0.1.1 -s 'This is a dummy package'"
+  echo "  Example: Same, but files are located in /usr/local/src/dummy"
+  echo "    ${SCRIPT} dummy 0.1.1 -d /usr/local/dummy -s 'This is a dummy package'"
+  echo "  Example: Like the first, send the package to 'universe/Graphic':"
+  echo "    ${SCRIPT} dummy 0.1.1 -s 'This is a dummy package' -g 'universe\/Graphic'"
+  echo "  Example: Our dummy requires httpd and PHP:"
+  echo "    ${SCRIPT} dummy 0.1.1 -s 'This is a dummy package' -req 'http phpapi'"
+  echo "  Example: The description for our dummy shall be read from a file:"
+  echo "    ${SCRIPT} dummy 0.1.1 -s 'This is a dummy package' -descfile ${BUILDDEB}/SPEC/dummy.desc"
+  echo
+  echo " The SPEC template file must reside in the ${BUILDDEB}/SPEC directory."
+  echo
+  echo " -q may be specified (up to 3 times) to make the script more quiet (one -q suppresses"
+  echo " the load of STDOUT from the build process. The second -q additionally suppresses"
+  echo " its still talkative STDERR. A third would even make STDOUT from this script calm."
+  echo
+  echo "When specifying a changelog file with the '-c' switch, take care of its syntax:"
+  echo "Newest entries must be on top. For the format, see the changelog entry added by"
+  echo "this script in the resulting SPEC file."
+  echo -e "${blue}============================================================================$NC"
+  echo
+  exit
+}
+
+#-----------------------------------------------[ Show progress (or don't) ]---
+function say {
+  [ $SILENT -lt 3 ] && echo -e "$1"
+}
+
+#------------------[ Read one char user input and convert it to lower case ]---
+function yesno {
+  read -n 1 -p "" ready
+  echo
+  res=`echo $ready|tr [:upper:] [:lower:]`
+}
+
+function stayorgo {
+  [ "$res" != "y" ] && {
+    echo "* Process canceled."
+    exit 0
+  }
+  echo
+}
+
+#---------------------------------------------------[ Output script header ]---
+function header {
+  [ $SILENT -lt 3 ] && clear
+  say "${blue}Debian Paket Builder"
+  say "--------------------${NC}"
+  say
+}
+
+#-------------------------------------------------------------[ ErrorExits ]---
+function nospec {
+  header
+  echo -e "${red}SPEC file template (${SPECTPL}) not found, aborting.$NC"
+  exit 2
+}
+
+function nosrc {
+  header
+  echo -e "${red}Sources of $PROG v$VERSION (${SRCDIR}/*) not found, aborting.$NC"
+  exit 2
+}
+
+#--------------------------[ Output a file entry to the debbuild file list ]---
+function list {
+  echo ${PREFIX}$1 >>$TMPFILE
+}
+
+#--------------[ Walk the source and create include file list for debbuild ]---
+function walkdir {
+  local DIR=$1
+  if [ -d $DIR ]; then
+    for entry in ${DIR}/*; do
+      walkdir "${entry}"
+    done
+  elif [ -f $DIR ]; then
+    list "${entry}"
+  elif [ -h $DIR ]; then
+    list "${entry}"
+  fi
+}
+
+#=============================================================[ Do the job ]===
+#-------------------------------------------[ process command line options ]---
+typeset -i SILENT=0
+PROG=$1
+VERSION=$2
+while [ "$1" != "" ] ; do
+  case "$1" in
+    -a) shift; VENDOR=$1;;
+    -b) shift; BUILDARCH=$1;;
+    -c) shift; CHANGELOG=$1;;
+    -conf) shift; CONF=$1;;
+    -d) shift; SRCDIR=$1;;
+    -descfile) shift; DESCFILE=$1;;
+    -g) shift; GROUP=$1;;
+    -l) shift; LICENSE=$1;;
+    -p) shift; PROG=$1;;
+    -prov) shift; PROV=$1;;
+    -q) let SILENT=$SILENT+1;;
+    -r) shift; RELEASE=$1;;
+    -req) shift; REQ=$1;;
+    -s) shift; SUMMARY=$1;;
+    -speconly) SPECONLY=1;;
+    -t) shift; SPECTPL="${BUILDDEB}/SPECS/$1";;
+    -u) shift; VENDORURL=$1;;
+  esac
+  shift
+done
+
+[ -z "$PROG" ] && help
+[ -z "$VERSION" ] && help
+
+if [ -f ~/.pkgmakerc ]; then
+  . ~/.pkgmakerc
+elif [ -f /etc/pkgmake.conf ]; then
+  . /etc/pkgmake.conf
+fi
+
+#----------------------------------------------------[ check preconditions ]---
+# SPEC file
+[ -z "$SPECTPL" ] && SPECTPL="${BUILDDEB}/SPECS/${PROG}.tpl"
+[ -f "${SPECTPL}" ] || nospec
+# Sources
+if [ -z "$SRCDIR" ]; then
+  SRCDIR="${BUILDDEB}/BUILD/${PROG}-${VERSION}"
+  [ -d "$SRCDIR" ] || nosrc
+else
+  [ -d "$SRCDIR" ] || nosrc
+  $SUDO rm -rf ${BUILDDEB}/BUILD/${PROG}-${VERSION}
+  $SUDO cp -rp $SRCDIR ${BUILDDEB}/BUILD/${PROG}-${VERSION}
+  SRCDIR="${BUILDDEB}/BUILD/${PROG}-${VERSION}"
+fi
+
+#-----------------------------------------------------------[ print header ]---
+header
+
+#----------------------------------------------------[ preparing SPEC file ]---
+say '* Preparing SPEC file'
+SPECFILE=${BUILDDEB}/SPECS/${PROG}-${VERSION}.spec
+cd "${BUILDDEB}/BUILD/${PROG}-${VERSION}"
+# Setup filelist
+for i in *; do
+  walkdir "$i"
+done
+# Requirements
+[ -n "$REQ" ] && {
+  typeset -i c=0
+  for r in $REQ; do
+    [ $c -gt 0 ] && REQUIRES="${REQUIRES}\n";
+    REQUIRES="${REQUIRES}Requires: $r"
+    let c=$c+1
+  done
+}
+# Provides
+[ -n "$PROV" ] && {
+  typeset -i c=0
+  for r in $PROV; do
+    [ $c -gt 0 ] && PROVIDES="${PROVIDES}\n";
+    PROVIDES="${PROVIDES}Provides: $r"
+    let c=$c+1
+  done
+}
+# ConfFiles
+[ -n "$CONF" ] && {
+  typeset -i c=0
+  for r in $CONF; do
+    [ $c -gt 0 ] && CONFIG="${CONFIG}\n";
+    CONFIG="${CONFIG}%config $r"
+    let c=$c+1
+  done
+}
+# Search and Replace the template vars
+cat $SPECTPL | sed "s/__RELEASE__/${RELEASE}/g" | sed "s/__NAME__/${PROG}/g" \
+ | sed "s/__VENDOR__/${VENDOR}/g" | sed "s/__PACKAGER__/${PACKAGER}/g" \
+ | sed "s/__BUILDARCH__/${BUILDARCH}/g" | sed "s/__CONFIG__/${CONFIG}/g" \
+ | sed "s/__SUMMARY__/${SUMMARY}/g" | sed "s/__GROUP__/${GROUP}/g" \
+ | sed "s/__LICENSE__/${LICENSE}/g" | sed "s/__VERSION__/${VERSION}/g" \
+ | sed "/__DIR__/ r ${TMPFILE}" | sed "/__DIR__/ d" > $SPECFILE
+if [ -f "${DESCFILE}" ]; then
+  cat $SPECFILE | sed "/__DESCRIPTION__/ r ${DESCFILE}" | sed "/__DESCRIPTION__/ d" > $TMPFILE
+else
+  cat $SPECFILE | sed "s/__DESCRIPTION__/${SUMMARY}/g" > $TMPFILE
+fi
+# The Vendor URL:
+if [ -n "$VENDORURL" ]; then
+  VENDORURL="URL: ${VENDORURL}"
+  cat $TMPFILE | sed "s/__VENDORURL__/${VENDORURL}/g" > $SPECFILE
+else
+  cat $TMPFILE | sed "/__VENDORURL__/ d" > $SPECFILE
+fi
+# Manual Requires:
+if [ -n "${REQUIRES}" ]; then
+  cat $SPECFILE | sed "s/__REQUIRES__/${REQUIRES}/g" > $TMPFILE
+else
+  cat $SPECFILE | sed "/__REQUIRES__/ d" > $TMPFILE
+fi
+# Manual Provides:
+if [ -n "${PROVIDES}" ]; then
+  cat $TMPFILE | sed "s/__PROVIDES__/${PROVIDES}/g" > $SPECFILE
+else
+  cat $TMPFILE | sed "/__PROVIDES__/ d" > $SPECFILE
+fi
+# ChangeLog:
+[ -n "${CHANGELOG}" ] && [ -f "${CHANGELOG}" ] && cat ${CHANGELOG} >> $SPECFILE
+echo "* `LANG=en_EN date +"%a %b %d %Y"` ${PACKAGER}">> $SPECFILE
+echo "- packaged version ${VERSION}-${RELEASE} of ${PROG}" >>$SPECFILE
+
+[ $SPECONLY -eq 1 ] && exit
+
+#---------------------------------------------------------[ create tarball ]---
+say '* Creating tarball'
+cd "${BUILDDEB}/BUILD/"
+tar czf ${BUILDDEB}/SOURCES/${PROG}-${VERSION}.tar.gz ${PROG}-${VERSION}/*
+
+#---------------------------------------------------[ building the package ]---
+say '* Running DebBuild'
+case "$SILENT" in
+  1)
+    $DEBBUILD -ba $SPECFILE >/dev/null
+    ;;
+  2|3)
+    $DEBBUILD -ba $SPECFILE &>/dev/null
+    ;;
+  *)
+    $DEBBUILD -ba $SPECFILE
+esac
