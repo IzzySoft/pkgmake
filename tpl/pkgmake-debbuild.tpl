@@ -62,12 +62,13 @@ ln -s /usr/src/rpm /usr/src/debian
 %doc pkgmake.txt
 %doc LICENSE
 %doc specfile.txt
+%doc history
 %config /etc/pkgmake.conf
 %attr(755,root,root) /usr/bin/pkgmake
 /usr/share/man/man5/pkgmake.conf.5
 /usr/share/man/man5/pkgmake.tpl.5
 /usr/share/man/man8/pkgmake.8
-/usr/src/redhat/SPECS/alldirs.tpl
-/usr/src/redhat/SPECS/make.tpl
+/usr/src/rpm/SPECS/alldirs.tpl
+/usr/src/rpm/SPECS/make.tpl
 
 %changelog
