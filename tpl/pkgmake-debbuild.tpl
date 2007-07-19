@@ -3,7 +3,7 @@ Name: __NAME__
 Version: __VERSION__
 Release: __RELEASE__
 License: __LICENSE__
-Group: Applications/Development
+Group: universe/Development
 Source: __NAME__-%{version}.tar.gz
 Vendor: Andreas Itzchak Rehberg <devel@izzysoft.de>
 URL: http://www.izzysoft.de/
