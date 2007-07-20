@@ -40,14 +40,15 @@ BUILDARCH="noarch"                      # Target Architecture (noarch,i386,...)
 LICENSE="GPL"                           # License of the program
 RELEASE="1"                        	# Release of this version
 GROUP="universe\/Misc"              	# Repository group this goes to
+SPECONLY=0                              # we not only create the spec by default
 MKTAR=1                                 # Create tarball from source
+NUKECVS=1                               # Cleanup CVS/* and .svn/* from source?
 
 # Don't change anything below this line except you know what you're doing
 BINDIR=${0%/*}				# where this script resides
 PREFIX="/"				# absolute path needed for *.deb
 TMPFILE="/tmp/flist.$$"			# we need some tempfile
 [ "`whoami`" != "root" ] && SUDO=sudo	# if executor is not root, we sudo
-SPECONLY=0                              # we not only create the spec by default
 
 #-----------------------------------------------------------------[ Colors ]---
 red='\e[0;31m'
@@ -81,6 +82,7 @@ function help {
   echo "     -g <group>                 Group for this package (escape slashes!)"
   echo "     -l <license>               License of the program (default: ${LICENSE})"
   echo "     -notar                     Don't create the tarball (i.e. it's already there)"
+  echo "     -nonukecvs                 Don't cleanup CVS/* and .svn/* files from source"
   echo "     -p <packager>              Packager for this package (default: ${PACKAGER})"
   echo "     -prov <provides>           Space separated list of provides"
   echo "     -r <release>               Release of this version (default: ${RELEASE})"
@@ -199,6 +201,7 @@ while [ "$1" != "" ] ; do
     -g) shift; GROUP=$1;;
     -l) shift; LICENSE=$1;;
     -notar) MKTAR=0;;
+    -nonukecvs) NUKECVS=0;;
     -p) shift; PROG=$1;;
     -prov) shift; PROV=$1;;
     -q) let SILENT=$SILENT+1;;
@@ -236,12 +239,24 @@ if [ $MKTAR -gt 0 ]; then
     $SUDO cp -rp $SRCDIR ${BUILDDEB}/BUILD/${PROG}-${VERSION}
     SRCDIR="${BUILDDEB}/BUILD/${PROG}-${VERSION}"
   fi
+  [ $NUKECVS -gt 0 ] && {
+    cd $SRCDIR
+    find . -type d -name "CVS" | xargs rm -fR
+    find . -type d -name ".svn" | xargs rm -fR
+    cd -
+  }
 else
   [ -f ${BUILDDEB}/SOURCES/${PROG}-${VERSION}.tar.gz ] || notar
   $SUDO rm -rf ${BUILDDEB}/BUILD/${PROG}-${VERSION}
   cd ${BUILDDEB}/BUILD
   $SUDO tar xzf ${BUILDDEB}/SOURCES/${PROG}-${VERSION}.tar.gz
   cd -
+  [ $NUKECVS -gt 0 ] && {
+    cd ${BUILDDEB}/BUILD/${PROG}-${VERSION}
+    find . -type d -name "CVS" | xargs rm -fR
+    find . -type d -name ".svn" | xargs rm -fR
+    cd -
+  }
 fi
 
 #-----------------------------------------------------------[ print header ]---

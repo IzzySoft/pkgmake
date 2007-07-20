@@ -53,11 +53,21 @@ Software group for e.g. the menu. On Ubuntu, this usually starts with the
 repository (e.g. "universe"). Again, escape all forward slashes. Examples
 are: "universe\\/Graphic" (Ubuntu/Debian) or "Applications\\/Graphic" (RPM).
 
+.IP "\fBSPECONLY\fP" 10
+If set to "1", pkgmake will only create the .spec file and exit (see also
+the -speconly command line parameter). Use this if you first want to check
+the .spec file before entering the build process - e.g. when testing.
+
 .IP "\fBMKTAR\fP" 10
 Whether a source tarball (<program>-<version>.tar.gz) shall be created in
 the SOURCES/ directory (MKTAR=1) or not (MKTAR=0). Use the -notar command
 line switch to override (if your configuration says "MKTAR=1" and you
 don't want this for this run). If specified, the -d switch will be ignored.
+
+.IP "\fBNUKECVS\fP" 10
+Shall we remove all CVS/* and .svn/* directories/files from the copy of the
+sources? Usually, you will set this to "1" since you don't want to have them
+in your distribution tarball. See also the -nonukecvs command line parameter.
 
 .SH "SEE ALSO" 
 .PP 

@@ -6,6 +6,9 @@ History for pkgmake
 v0.1.2
 -------------------
 + added the MKTAR configuration variable (and -notar command line switch)
++ added the NUKECVS config variable (and -nonukecvs command line switch)
+  for cleaning up the copy of your source (and thus the distribution
+  tarball) from CVS/SVN config files
 
 v0.1.1 (20.07.2007)
 -------------------

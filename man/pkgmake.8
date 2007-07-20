@@ -15,6 +15,7 @@ pkgmake - create RPM spec files and build *.rpm/*.deb packages
 .RB [ "-g \fIgroup" ]
 .RB [ "-l \fIlicense" ]
 .RB [ "-notar" ]
+.RB [ "-nonukecvs" ]
 .RB [ "-p \fIpackager" ]
 .RB [ "-prov \fI'provides what'" ]
 .RB [ "-r \fIrelease" ]
@@ -92,6 +93,10 @@ License of the software. Should be GPL :)
 Don't create tarball from the sources. This means, that the source tarball
 already exists in the SOURCES/ directory with the correct naming conventions.
 Even if you specify a directory with -d, that will be ignored in this case.
+.TP
+.B -nonukecvs
+Don't nuke the CVS/* and .svn/* files from the source (copy). Not very useful -
+but hey, you never know who wants to distribute the CVS/SVN information along!
 .TP
 .B -p
 The packager - you, if you build the package. Same rules as with -a
