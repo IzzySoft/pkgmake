@@ -62,13 +62,14 @@ function help {
   SCRIPT=${0##*/}
   clear
   echo
-  echo -e "${blue}============================================================================"
+  echo -e "${blue}==============================================================================="
   echo "Debian Paket Builder v${PKGMV} (c) 2007 by Itzchak Rehberg (devel@izzysoft.de)"
-  echo -e "----------------------------------------------------------------------------$NC"
-  echo This script is a wrapper to debbuild, which is a wrapper to the Debian
-  echo package building binaries. It shall simplify the build process for
-  echo developers by automatizing mosts steps. Distributed under the terms of the GPL.
-  echo -e "${blue}----------------------------------------------------------------------------$NC"
+  echo -e "-------------------------------------------------------------------------------$NC"
+  echo This script is a wrapper to debbuild, which is a wrapper to the Debian package
+  echo building binaries. It shall simplify the build process for developers by auto-
+  echo matizing mosts steps.
+  echo Distributed under the terms of the GPL. No warranties - use at your own risk!
+  echo -e "${blue}-------------------------------------------------------------------------------$NC"
   echo "Syntax: ${SCRIPT} <PackageName> <Version> [Options]"
   echo "  Parameter:"
   echo "     <PackageName>              Name of the package"
@@ -115,7 +116,7 @@ function help {
   echo "When specifying a changelog file with the '-c' switch, take care of its syntax:"
   echo "Newest entries must be on top. For the format, see the changelog entry added by"
   echo "this script in the resulting SPEC file."
-  echo -e "${blue}============================================================================$NC"
+  echo -e "${blue}===============================================================================$NC"
   echo
   exit
 }
@@ -144,9 +145,9 @@ function stayorgo {
 function header {
   [ $SILENT -lt 3 ] && clear
   say "${blue}pkgmake v${PKGMV}"
-  say "--------------${NC}"
-  say "Preparing version ${VERSION} of ${PROG} for release:"
+  say "--------------"
   say
+  say "Preparing ${PROG} v${VERSION} for release:${NC}"
 }
 
 #-------------------------------------------------------------[ ErrorExits ]---
@@ -166,6 +167,12 @@ function notar {
   header
   echo -e "${red}Tarball for $PROG v$VERSION (${BUILDDEB}/SOURCES/${PROG}-${VERSION}.tar.gz) not found, aborting.$NC"
   exit 2
+}
+
+function finito {
+  say "${blue}* Done.$NC"
+  say
+  exit
 }
 
 #--------------------------[ Output a file entry to the debbuild file list ]---
@@ -266,7 +273,7 @@ fi
 header
 
 #----------------------------------------------------[ preparing SPEC file ]---
-say '* Preparing SPEC file'
+say "${blue}* Preparing SPEC file$NC"
 SPECFILE=${BUILDDEB}/SPECS/${PROG}-${VERSION}.spec
 cd "${BUILDDEB}/BUILD/${PROG}-${VERSION}"
 # Setup filelist
@@ -336,20 +343,17 @@ fi
 echo "* `LANG=en_EN date +"%a %b %d %Y"` ${PACKAGER}">> $SPECFILE
 echo "- packaged version ${VERSION}-${RELEASE} of ${PROG}" >>$SPECFILE
 
-[ $SPECONLY -eq 1 ] && {
-  say
-  exit
-}
+[ $SPECONLY -eq 1 ] && finito
 
 #---------------------------------------------------------[ create tarball ]---
 if [ $MKTAR -gt 0 ]; then
-  say '* Creating tarball'
+  say "${blue}* Creating tarball$NC"
   cd "${BUILDDEB}/BUILD/"
   $SUDO tar czf ${BUILDDEB}/SOURCES/${PROG}-${VERSION}.tar.gz ${PROG}-${VERSION}/*
 fi
 
 #---------------------------------------------------[ building the package ]---
-say "* Running ${DEBBUILD}"
+say "${blue}* Running ${DEBBUILD}$NC"
 case "$SILENT" in
   1)
     $SUDO $DEBBUILD -ba $SPECFILE >/dev/null
@@ -360,4 +364,5 @@ case "$SILENT" in
   *)
     $SUDO $DEBBUILD -ba $SPECFILE
 esac
-say
+
+finito
