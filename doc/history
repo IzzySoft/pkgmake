@@ -3,6 +3,10 @@ $Id$
 History for pkgmake
 ===================
 
-v0.1.1 (initial version)
-------------------------
+v0.1.2
+-------------------
++ added the MKTAR configuration variable (and -notar command line switch)
+
+v0.1.1 (20.07.2007)
+-------------------
 * first public version

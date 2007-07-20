@@ -40,6 +40,7 @@ BUILDARCH="noarch"                      # Target Architecture (noarch,i386,...)
 LICENSE="GPL"                           # License of the program
 RELEASE="1"                        	# Release of this version
 GROUP="universe\/Misc"              	# Repository group this goes to
+MKTAR=1                                 # Create tarball from source
 
 # Don't change anything below this line except you know what you're doing
 BINDIR=${0%/*}				# where this script resides
@@ -79,6 +80,7 @@ function help {
   echo "     -descfile <file>           Filename of the file holding the long desc"
   echo "     -g <group>                 Group for this package (escape slashes!)"
   echo "     -l <license>               License of the program (default: ${LICENSE})"
+  echo "     -notar                     Don't create the tarball (i.e. it's already there)"
   echo "     -p <packager>              Packager for this package (default: ${PACKAGER})"
   echo "     -prov <provides>           Space separated list of provides"
   echo "     -r <release>               Release of this version (default: ${RELEASE})"
@@ -156,6 +158,12 @@ function nosrc {
   exit 2
 }
 
+function notar {
+  header
+  echo -e "${red}Tarball for $PROG v$VERSION (${BUILDDEB}/SOURCES/${PROG}-${VERSION}.tar.gz) not found, aborting.$NC"
+  exit 2
+}
+
 #--------------------------[ Output a file entry to the debbuild file list ]---
 function list {
   echo ${PREFIX}$1 >>$TMPFILE
@@ -190,6 +198,7 @@ while [ "$1" != "" ] ; do
     -descfile) shift; DESCFILE=$1;;
     -g) shift; GROUP=$1;;
     -l) shift; LICENSE=$1;;
+    -notar) MKTAR=0;;
     -p) shift; PROG=$1;;
     -prov) shift; PROV=$1;;
     -q) let SILENT=$SILENT+1;;
@@ -217,14 +226,22 @@ fi
 [ -z "$SPECTPL" ] && SPECTPL="${BUILDDEB}/SPECS/${PROG}.tpl"
 [ -f "${SPECTPL}" ] || nospec
 # Sources
-if [ -z "$SRCDIR" ]; then
-  SRCDIR="${BUILDDEB}/BUILD/${PROG}-${VERSION}"
-  [ -d "$SRCDIR" ] || nosrc
+if [ $MKTAR -gt 0 ]; then
+  if [ -z "$SRCDIR" ]; then
+    SRCDIR="${BUILDDEB}/BUILD/${PROG}-${VERSION}"
+    [ -d "$SRCDIR" ] || nosrc
+  else
+    [ -d "$SRCDIR" ] || nosrc
+    $SUDO rm -rf ${BUILDDEB}/BUILD/${PROG}-${VERSION}
+    $SUDO cp -rp $SRCDIR ${BUILDDEB}/BUILD/${PROG}-${VERSION}
+    SRCDIR="${BUILDDEB}/BUILD/${PROG}-${VERSION}"
+  fi
 else
-  [ -d "$SRCDIR" ] || nosrc
+  [ -f ${BUILDDEB}/SOURCES/${PROG}-${VERSION}.tar.gz ] || notar
   $SUDO rm -rf ${BUILDDEB}/BUILD/${PROG}-${VERSION}
-  $SUDO cp -rp $SRCDIR ${BUILDDEB}/BUILD/${PROG}-${VERSION}
-  SRCDIR="${BUILDDEB}/BUILD/${PROG}-${VERSION}"
+  cd ${BUILDDEB}/BUILD
+  $SUDO tar xzf ${BUILDDEB}/SOURCES/${PROG}-${VERSION}.tar.gz
+  cd -
 fi
 
 #-----------------------------------------------------------[ print header ]---
@@ -304,19 +321,21 @@ echo "- packaged version ${VERSION}-${RELEASE} of ${PROG}" >>$SPECFILE
 [ $SPECONLY -eq 1 ] && exit
 
 #---------------------------------------------------------[ create tarball ]---
-say '* Creating tarball'
-cd "${BUILDDEB}/BUILD/"
-tar czf ${BUILDDEB}/SOURCES/${PROG}-${VERSION}.tar.gz ${PROG}-${VERSION}/*
+if [ $MKTAR -gt 0 ]; then
+  say '* Creating tarball'
+  cd "${BUILDDEB}/BUILD/"
+  $SUDO tar czf ${BUILDDEB}/SOURCES/${PROG}-${VERSION}.tar.gz ${PROG}-${VERSION}/*
+fi
 
 #---------------------------------------------------[ building the package ]---
 say '* Running DebBuild'
 case "$SILENT" in
   1)
-    $DEBBUILD -ba $SPECFILE >/dev/null
+    $SUDO $DEBBUILD -ba $SPECFILE >/dev/null
     ;;
   2|3)
-    $DEBBUILD -ba $SPECFILE &>/dev/null
+    $SUDO $DEBBUILD -ba $SPECFILE &>/dev/null
     ;;
   *)
-    $DEBBUILD -ba $SPECFILE
+    $SUDO $DEBBUILD -ba $SPECFILE
 esac

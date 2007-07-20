@@ -51,7 +51,7 @@ mv ${RPM_BUILD_ROOT}/usr/share/doc/pkgmake/* ${RPM_BUILD_ROOT}/usr/share/doc/
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -rf $RPM_BUILD_ROOT
 
 %post
-ln -s /usr/src/rpm /usr/src/debian
+[ ! -h /usr/src/debian ] && [ ! -d /usr/src/debian ] && ln -s /usr/src/rpm /usr/src/debian
 
 %preun
 

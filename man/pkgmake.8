@@ -14,6 +14,7 @@ pkgmake - create RPM spec files and build *.rpm/*.deb packages
 .RB [ "-descfile \fIdescription-file" ]
 .RB [ "-g \fIgroup" ]
 .RB [ "-l \fIlicense" ]
+.RB [ "-notar" ]
 .RB [ "-p \fIpackager" ]
 .RB [ "-prov \fI'provides what'" ]
 .RB [ "-r \fIrelease" ]
@@ -86,6 +87,11 @@ forward slashes with a backslash.
 .TP
 .B -l
 License of the software. Should be GPL :)
+.TP
+.B -notar
+Don't create tarball from the sources. This means, that the source tarball
+already exists in the SOURCES/ directory with the correct naming conventions.
+Even if you specify a directory with -d, that will be ignored in this case.
 .TP
 .B -p
 The packager - you, if you build the package. Same rules as with -a
