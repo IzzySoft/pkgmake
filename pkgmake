@@ -49,6 +49,7 @@ BINDIR=${0%/*}				# where this script resides
 PREFIX="/"				# absolute path needed for *.deb
 TMPFILE="/tmp/flist.$$"			# we need some tempfile
 [ "`whoami`" != "root" ] && SUDO=sudo	# if executor is not root, we sudo
+PKGMV=0.1.2                             # Version of this script
 
 #-----------------------------------------------------------------[ Colors ]---
 red='\e[0;31m'
@@ -62,7 +63,7 @@ function help {
   clear
   echo
   echo -e "${blue}============================================================================"
-  echo "Debian Paket Builder v0.1.1 (c) 2007 by Itzchak Rehberg (devel@izzysoft.de)"
+  echo "Debian Paket Builder v${PKGMV} (c) 2007 by Itzchak Rehberg (devel@izzysoft.de)"
   echo -e "----------------------------------------------------------------------------$NC"
   echo This script is a wrapper to debbuild, which is a wrapper to the Debian
   echo package building binaries. It shall simplify the build process for
@@ -142,8 +143,9 @@ function stayorgo {
 #---------------------------------------------------[ Output script header ]---
 function header {
   [ $SILENT -lt 3 ] && clear
-  say "${blue}Debian Paket Builder"
-  say "--------------------${NC}"
+  say "${blue}pkgmake v${PKGMV}"
+  say "--------------${NC}"
+  say "Preparing version ${VERSION} of ${PROG} for release:"
   say
 }
 
@@ -186,6 +188,13 @@ function walkdir {
 }
 
 #=============================================================[ Do the job ]===
+#----------------------------------------------[ Read config file (if any) ]---
+if [ -f ~/.pkgmakerc ]; then
+  . ~/.pkgmakerc
+elif [ -f /etc/pkgmake.conf ]; then
+  . /etc/pkgmake.conf
+fi
+
 #-------------------------------------------[ process command line options ]---
 typeset -i SILENT=0
 PROG=$1
@@ -217,12 +226,6 @@ done
 
 [ -z "$PROG" ] && help
 [ -z "$VERSION" ] && help
-
-if [ -f ~/.pkgmakerc ]; then
-  . ~/.pkgmakerc
-elif [ -f /etc/pkgmake.conf ]; then
-  . /etc/pkgmake.conf
-fi
 
 #----------------------------------------------------[ check preconditions ]---
 # SPEC file
@@ -333,7 +336,10 @@ fi
 echo "* `LANG=en_EN date +"%a %b %d %Y"` ${PACKAGER}">> $SPECFILE
 echo "- packaged version ${VERSION}-${RELEASE} of ${PROG}" >>$SPECFILE
 
-[ $SPECONLY -eq 1 ] && exit
+[ $SPECONLY -eq 1 ] && {
+  say
+  exit
+}
 
 #---------------------------------------------------------[ create tarball ]---
 if [ $MKTAR -gt 0 ]; then
@@ -343,7 +349,7 @@ if [ $MKTAR -gt 0 ]; then
 fi
 
 #---------------------------------------------------[ building the package ]---
-say '* Running DebBuild'
+say "* Running ${DEBBUILD}"
 case "$SILENT" in
   1)
     $SUDO $DEBBUILD -ba $SPECFILE >/dev/null
@@ -354,3 +360,4 @@ case "$SILENT" in
   *)
     $SUDO $DEBBUILD -ba $SPECFILE
 esac
+say
