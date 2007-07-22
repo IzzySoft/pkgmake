@@ -2,22 +2,46 @@
 # $Id$
 
 DESTDIR=
-BINDIR=$(DESTDIR)/usr/bin
-DOCDIR=$(DESTDIR)/usr/share/doc/pkgmake
-CONFDIR=$(DESTDIR)/etc
-MANDIR=$(DESTDIR)/usr/share/man
+INSTALL=install
+INSTALL_PROGRAM=$(INSTALL)
+INSTALL_DATA=$(INSTALL) -m 644
+prefix=/usr/local
+exec_prefix=$(prefix)
+bindir=$(exec_prefix)/bin
+datarootdir=$(prefix)/share
+datadir=$(datarootdir)
+sysconfdir=$(prefix)/etc
+docdir=$(datarootdir)/doc/pkgmake
+sysconfdir=$(prefix)/etc
+mandir=$(datarootdir)/man
+man5dir=$(mandir)/man5
+man8dir=$(mandir)/man8
+
 RPMROOT=$(DESTDIR)/usr/src/rpm
 DEBLINK=$(DESTDIR)/usr/src/debian
 SPECDIR=$(RPMROOT)/SPECS
-INSTALL=install
 
-install:
-	mkdir -p $(DOCDIR)
-	mkdir -p $(SPECDIR)
-	$(INSTALL) -c -m 755 pkgmake.conf $(CONFDIR)
-	$(INSTALL) -c -m 755 pkgmake $(BINDIR)
-	$(INSTALL) -c -m 644 doc/* $(DOCDIR)
-	$(INSTALL) -c -m 644 man/*.5 $(MANDIR)/man5
-	$(INSTALL) -c -m 644 man/*.8 $(MANDIR)/man8
-	$(INSTALL) -c -m 644 tpl/* $(SPECDIR)
-	[ ! -f $(DEBLINK) ] && [ ! -h $(DEBLINK) ] && ln -s $(RPMROOT) $(DEBLINK)
+install: installdirs
+	$(INSTALL_DATA) -c pkgmake.conf $(DESTDIR)$(sysconfdir)
+	$(INSTALL) -c pkgmake $(DESTDIR)$(bindir)
+	$(INSTALL_DATA) -c doc/* $(DESTDIR)$(docdir)
+	$(INSTALL_DATA) -c man/*.5 $(DESTDIR)$(man5dir)
+	$(INSTALL_DATA) -c man/*.8 $(DESTDIR)$(man8dir)
+	$(INSTALL_DATA) -c tpl/* $(SPECDIR)
+
+uninstall:
+	rm -f $(DESTDIR)$(sysconfdir)/pkgmake.conf
+	rm -f $(DESTDIR)$(bindir)/pkgmake
+	rm -rf $(DESTDIR)$(docdir)
+	rm -f $(DESTDIR)$(man5dir)/pkgmake.*
+	rm -f $(DESTDIR)$(man8dir)/pkgmake.*
+
+installdirs:
+	# Generate all required target directories (due to DESTDIR, i.e. all)
+	mkdir -p $(DESTDIR)$(docdir)
+	if [ ! -d $(SPECDIR) ]; then mkdir -p $(SPECDIR); fi
+	if [ ! -d $(DESTDIR)$(bindir) ]; then mkdir -p $(DESTDIR)$(bindir); fi
+	if [ ! -d $(DESTDIR)$(sysconfdir) ]; then mkdir -p $(DESTDIR)$(sysconfdir); fi
+	if [ ! -d $(DESTDIR)$(man5dir) ]; then mkdir -p $(DESTDIR)$(man5dir); fi
+	if [ ! -d $(DESTDIR)$(man8dir) ]; then mkdir -p $(DESTDIR)$(man8dir); fi
+	if [ ! -e $(DEBLINK) ]; then if [ -e $(RPMROOT) ]; then ln -s $(RPMROOT) $(DEBLINK); fi; fi

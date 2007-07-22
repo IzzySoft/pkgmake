@@ -3,6 +3,11 @@ $Id$
 History for pkgmake
 ===================
 
+v0.1.3
+-------------------
++ add uninstall target to Makefile and make the whole Makefile better complying
+  to what the make documentation recommends
+
 v0.1.2 (22.07.2007)
 -------------------
 + added the MKTAR configuration variable (and -notar command line switch)
