@@ -20,4 +20,4 @@ install:
 	$(INSTALL) -c -m 644 man/*.5 $(MANDIR)/man5
 	$(INSTALL) -c -m 644 man/*.8 $(MANDIR)/man8
 	$(INSTALL) -c -m 644 tpl/* $(SPECDIR)
-	[ !-f $(DEBLINK) ] && [ ! -h $(DEBLINK) ] && ln -s $(RPMROOT) $(DEBLINK)
+	[ ! -f $(DEBLINK) ] && [ ! -h $(DEBLINK) ] && ln -s $(RPMROOT) $(DEBLINK)
