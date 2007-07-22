@@ -3,7 +3,7 @@ $Id$
 History for pkgmake
 ===================
 
-v0.1.2
+v0.1.2 (22.07.2007)
 -------------------
 + added the MKTAR configuration variable (and -notar command line switch)
 + added the NUKECVS config variable (and -nonukecvs command line switch)
