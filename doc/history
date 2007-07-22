@@ -15,6 +15,7 @@ v0.1.2
 + Added processing for *.rpm packages (see the new configuration options
   MKDEB and MKRPM). You now can decide whether you want to build *.deb, *.rpm
   or both. Use command line parameters (-[no]deb, -[no]rpm) to override.
+! Changelog was applied in wrong order (causing rpmbuild to fail)
 
 v0.1.1 (20.07.2007)
 -------------------

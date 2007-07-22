@@ -27,3 +27,7 @@ Hints for the SPEC file template:
   __DIR__
   %config /var/www/phpdivelog/inc/config.inc
 
+* For now, leave the %changelog section empty. pkgmake will add your specified
+  CHANGELOG file (if any) and a fake changelog entry itself. It does not yet
+  check whether there are already entries in the .spec file and thus would
+  mess up the order if there are any.

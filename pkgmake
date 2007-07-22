@@ -349,9 +349,12 @@ else
   cat $TMPFILE | sed "/__PROVIDES__/ d" > $SPECFILE
 fi
 # ChangeLog:
-[ -n "${CHANGELOG}" ] && [ -f "${CHANGELOG}" ] && cat ${CHANGELOG} >> $SPECFILE
-echo "* `LANG=en_EN date +"%a %b %d %Y"` ${PACKAGER}">> $SPECFILE
-echo "- packaged version ${VERSION}-${RELEASE} of ${PROG}" >>$SPECFILE
+echo "* `LANG=en_EN date +"%a %b %d %Y"` ${PACKAGER}"> $TMPFILE
+echo "- packaged version ${VERSION}-${RELEASE} of ${PROG}" >>$TMPFILE
+[ -n "${CHANGELOG}" ] && [ -f "${CHANGELOG}" ] && cat ${CHANGELOG} >> $TMPFILE
+cat $TMPFILE >> $SPECFILE
+
+rm -f $TMPFILE
 
 [ $SPECONLY -eq 1 ] && finito
 
