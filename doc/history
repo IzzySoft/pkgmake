@@ -10,6 +10,8 @@ v0.1.2
   for cleaning up the copy of your source (and thus the distribution
   tarball) from CVS/SVN config files
 ! configuration files have been overriding command line options - fixed.
+* removed all the automatic sudo - if you need to run as a different user,
+  you now have to sudo the script yourself
 
 v0.1.1 (20.07.2007)
 -------------------

@@ -48,7 +48,6 @@ NUKECVS=1                               # Cleanup CVS/* and .svn/* from source?
 BINDIR=${0%/*}				# where this script resides
 PREFIX="/"				# absolute path needed for *.deb
 TMPFILE="/tmp/flist.$$"			# we need some tempfile
-[ "`whoami`" != "root" ] && SUDO=sudo	# if executor is not root, we sudo
 PKGMV=0.1.2                             # Version of this script
 
 #-----------------------------------------------------------------[ Colors ]---
@@ -245,8 +244,8 @@ if [ $MKTAR -gt 0 ]; then
     [ -d "$SRCDIR" ] || nosrc
   else
     [ -d "$SRCDIR" ] || nosrc
-    $SUDO rm -rf ${BUILDDEB}/BUILD/${PROG}-${VERSION}
-    $SUDO cp -rp $SRCDIR ${BUILDDEB}/BUILD/${PROG}-${VERSION}
+    rm -rf ${BUILDDEB}/BUILD/${PROG}-${VERSION}
+    cp -rp $SRCDIR ${BUILDDEB}/BUILD/${PROG}-${VERSION}
     SRCDIR="${BUILDDEB}/BUILD/${PROG}-${VERSION}"
   fi
   [ $NUKECVS -gt 0 ] && {
@@ -257,9 +256,9 @@ if [ $MKTAR -gt 0 ]; then
   }
 else
   [ -f ${BUILDDEB}/SOURCES/${PROG}-${VERSION}.tar.gz ] || notar
-  $SUDO rm -rf ${BUILDDEB}/BUILD/${PROG}-${VERSION}
+  rm -rf ${BUILDDEB}/BUILD/${PROG}-${VERSION}
   cd ${BUILDDEB}/BUILD
-  $SUDO tar xzf ${BUILDDEB}/SOURCES/${PROG}-${VERSION}.tar.gz
+  tar xzf ${BUILDDEB}/SOURCES/${PROG}-${VERSION}.tar.gz
   cd -
   [ $NUKECVS -gt 0 ] && {
     cd ${BUILDDEB}/BUILD/${PROG}-${VERSION}
@@ -349,20 +348,20 @@ echo "- packaged version ${VERSION}-${RELEASE} of ${PROG}" >>$SPECFILE
 if [ $MKTAR -gt 0 ]; then
   say "${blue}* Creating tarball$NC"
   cd "${BUILDDEB}/BUILD/"
-  $SUDO tar czf ${BUILDDEB}/SOURCES/${PROG}-${VERSION}.tar.gz ${PROG}-${VERSION}/*
+  tar czf ${BUILDDEB}/SOURCES/${PROG}-${VERSION}.tar.gz ${PROG}-${VERSION}/*
 fi
 
 #---------------------------------------------------[ building the package ]---
 say "${blue}* Running ${DEBBUILD}$NC"
 case "$SILENT" in
   1)
-    $SUDO $DEBBUILD -ba $SPECFILE >/dev/null
+    $DEBBUILD -ba $SPECFILE >/dev/null
     ;;
   2|3)
-    $SUDO $DEBBUILD -ba $SPECFILE &>/dev/null
+    $DEBBUILD -ba $SPECFILE &>/dev/null
     ;;
   *)
-    $SUDO $DEBBUILD -ba $SPECFILE
+    $DEBBUILD -ba $SPECFILE
 esac
 
 finito
