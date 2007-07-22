@@ -77,6 +77,9 @@ Directory to use for a work copy. If used, this directory (and all its content)
 will be copied to the Buildroot and handled there. If not used, the files to use
 are expected in the Buildroot as a sub directory with the name <PackageName>-<Version>
 .TP
+.B -deb
+Make *.deb (even if config says MKDEB=0)
+.TP
 .B -descfile
 A file holding the long description for the package. If not given, the summary will
 be used instead.
@@ -89,14 +92,20 @@ forward slashes with a backslash.
 .B -l
 License of the software. Should be GPL :)
 .TP
-.B -notar
-Don't create tarball from the sources. This means, that the source tarball
-already exists in the SOURCES/ directory with the correct naming conventions.
-Even if you specify a directory with -d, that will be ignored in this case.
+.B -nodeb
+Don't make *.deb (even if config says MKDEB=1)
 .TP
 .B -nonukecvs
 Don't nuke the CVS/* and .svn/* files from the source (copy). Not very useful -
 but hey, you never know who wants to distribute the CVS/SVN information along!
+.TP
+.B -norpm
+Don't make *.rpm (even if config says MKRPM=1)
+.TP
+.B -notar
+Don't create tarball from the sources. This means, that the source tarball
+already exists in the SOURCES/ directory with the correct naming conventions.
+Even if you specify a directory with -d, that will be ignored in this case.
 .TP
 .B -p
 The packager - you, if you build the package. Same rules as with -a
@@ -111,6 +120,9 @@ The release tag for this package.
 .TP
 .B -req
 What other packages this package depends on. Same rules as with -prov
+.TP
+.B -rpm
+Make *.rpm (even if config says MKRPM=0)
 .TP
 .B -q
 Tell the script to be quiet. You can use this option up to 3 times on one call:

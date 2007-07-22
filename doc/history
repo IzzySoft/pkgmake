@@ -12,6 +12,9 @@ v0.1.2
 ! configuration files have been overriding command line options - fixed.
 * removed all the automatic sudo - if you need to run as a different user,
   you now have to sudo the script yourself
++ Added processing for *.rpm packages (see the new configuration options
+  MKDEB and MKRPM). You now can decide whether you want to build *.deb, *.rpm
+  or both. Use command line parameters (-[no]deb, -[no]rpm) to override.
 
 v0.1.1 (20.07.2007)
 -------------------
