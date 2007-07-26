@@ -1,4 +1,4 @@
-.TH pkgmake 8 "19 July 2007"
+.TH pkgmake 8 "26 July 2007"
 .IX pkgmake
 .SH NAME
 pkgmake - create RPM spec files and build *.rpm/*.deb packages
@@ -11,18 +11,24 @@ pkgmake - create RPM spec files and build *.rpm/*.deb packages
 .RB [ "-c \fIchangelog-file" ]
 .RB [ "-conf \fI'conf files'" ]
 .RB [ "-d \fIdirectory-root" ]
+.RB [ "-deb" ]
 .RB [ "-descfile \fIdescription-file" ]
 .RB [ "-g \fIgroup" ]
 .RB [ "-l \fIlicense" ]
+.RB [ "-nosdeb" ]
+.RB [ "-nosrpm" ]
 .RB [ "-notar" ]
 .RB [ "-nonukecvs" ]
 .RB [ "-p \fIpackager" ]
 .RB [ "-prov \fI'provides what'" ]
 .RB [ "-r \fIrelease" ]
 .RB [ "-req \fI'requires what'" ]
+.RB [ "-rpm" ]
 .RB [ "-q" ]
 .RB [ "-s \fI'short summary'" ]
+.RB [ "-sdeb" ]
 .RB [ "-speconly" ]
+.RB [ "-srpm" ]
 .RB [ "-t \fItemplate-file" ]
 .RB [ "-u \fIvendor-URL" ]
 
@@ -102,6 +108,15 @@ but hey, you never know who wants to distribute the CVS/SVN information along!
 .B -norpm
 Don't make *.rpm (even if config says MKRPM=1)
 .TP
+.B -nosdeb
+Don't create Debian sourcce package (*.sdeb). Since these source packages only
+make sense to people using debbuild, they should normally not be build. The only
+reason could be for you to store the source tarball together with the Spec file
+in one archive.
+.TP
+.B -nosrpm
+Don't create RPM source package (*.src.rpm)
+.TP
 .B -notar
 Don't create tarball from the sources. This means, that the source tarball
 already exists in the SOURCES/ directory with the correct naming conventions.
@@ -134,8 +149,14 @@ STDOUT from this script calm.
 Give a short summary what your package is about. Enclose in quotes, escape all
 forward slashes with backslashes again.
 .TP
+.B -sdeb
+Create Debian source package. See -nosdeb above for details.
+.TP
 .B -speconly
 Only create the *.spec file - don't run the package build process.
+.TP
+.B -srpm
+Create RPM source package (*.src.rpm)
 .TP
 .B -t
 Template file to use for the *.spec file. This file must be in the SPEC/
@@ -150,9 +171,6 @@ details).
 .B -u
 Specify a vendor URL. Again, forward slashes have to be escaped with
 backslashes, e.g. http:\\/\\/www.domain.com\\/
-.TP
-.B -height
-The height (number of rows) of the input image.  Default is 48.
 
 .SH "CONFIGURATION"
 Configuration can be done in either ~/.pkgmakerc, /etc/pkgmake.conf or the

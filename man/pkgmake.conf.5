@@ -1,4 +1,4 @@
-.TH "PKGMAKE.CONF" "5" "19 July 2007"
+.TH "PKGMAKE.CONF" "5" "26 July 2007"
 .SH "NAME" 
 pkgmake.conf \- Configuration file for \fBpkgmake\fR, which creates RPM spec
 files and builds *.rpm/*.deb packages
@@ -76,6 +76,15 @@ this on the command line with the -deb or -nodeb parameters.
 .IP "\fBMKRPM\fP" 10
 Do you want to create RPM packages (*.rpm) by default? You can override
 this on the command line with the -rpm or -norpm parameters.
+
+.IP "\fBMKSDEB\fP" 10
+Create Debian sourcce package (*.sdeb) by default?. Since these source packages
+only make sense to people using debbuild, they should normally not be build.
+The only reason could be for you to store the source tarball together with the
+Spec file in one archive.
+
+.IP "\fBMKSRPM\fP" 10
+Create RPM source package (*.src.rpm) by default?
 
 .SH "SEE ALSO" 
 .PP 

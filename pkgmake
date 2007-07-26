@@ -46,6 +46,8 @@ MKTAR=1                                 # Create tarball from source
 NUKECVS=1                               # Cleanup CVS/* and .svn/* from source?
 MKDEB=1					# Make Debian package (*.deb)?
 MKRPM=0					# Make RPM package (*.rpm)?
+MKSDEB=0				# Make Debian source package (*.sdeb)?
+MKSRPM=0				# Make RPM source package (*.src.rpm)?
 
 # Don't change anything below this line except you know what you're doing
 BINDIR=${0%/*}				# where this script resides
@@ -89,6 +91,8 @@ function help {
   echo "     -nodeb			Don't make *.deb even if MKDEB=1"
   echo "     -nonukecvs                 Don't cleanup CVS/* and .svn/* files from source"
   echo "     -norpm			Don't make *.rpm even if MKRPM=1"
+  echo "     -nosdeb			Don't make Debian source package"
+  echo "     -nosrpm			Don't make RPM source package"
   echo "     -notar                     Don't create the tarball (i.e. it's already there)"
   echo "     -p <packager>              Packager for this package (default: ${PACKAGER})"
   echo "     -prov <provides>           Space separated list of provides"
@@ -97,7 +101,9 @@ function help {
   echo "     -rpm			Make *.rpm even if MKRPM=0"
   echo "     -q	                        Be Quiet"
   echo "     -s <summary>               Short description (put in quotes!)"
+  echo "     -sdeb			Make Debian source package (*.sdeb)"
   echo "     -speconly                  Only create the SPEC file and exit, no build"
+  echo "     -srpm			Make RPM source package (*.src.rpm)"
   echo "     -t <TemplateFile>          Template file (default: <PackageName>.tpl)"
   echo "     -u <vendor URL>            Vendor URL for this package (default: ${VENDORURL})"
   echo
@@ -226,6 +232,8 @@ while [ "$1" != "" ] ; do
     -nodeb) MKDEB=0;;
     -nonukecvs) NUKECVS=0;;
     -norpm) MKRPM=0;;
+    -nosdeb) MKSDEB=0;;
+    -nosrpm) MKSRPM=0;
     -notar) MKTAR=0;;
     -p) shift; PACKAGER=$1;;
     -prov) shift; PROV=$1;;
@@ -234,7 +242,9 @@ while [ "$1" != "" ] ; do
     -req) shift; REQ=$1;;
     -rpm) MKRPM=1;;
     -s) shift; SUMMARY=$1;;
+    -sdeb) MKSDEB=1;;
     -speconly) SPECONLY=1;;
+    -srpm) MKSRPM=1;;
     -t) shift; SPECTPL="${BUILDDEB}/SPECS/$1";;
     -u) shift; VENDORURL=$1;;
   esac
@@ -366,19 +376,21 @@ if [ $MKTAR -gt 0 ]; then
 fi
 
 #---------------------------------------------------[ building the package ]---
+if [ $MKSDEB -eq 0 ]; then DEBPARM="-bb"; else DEBPARM="-ba"; fi
+if [ $MKSRPM -eq 0 ]; then RPMPARM="-bb"; else RPMPARM="-ba"; fi
 say "${blue}* Running ${DEBBUILD}$NC"
 case "$SILENT" in
   1)
-    [ $MKDEB -gt 0 ] && $DEBBUILD -ba $SPECFILE >/dev/null
-    [ $MKRPM -gt 0 ] && $RPMBUILD -ba $SPECFILE >/dev/null
+    [ $MKDEB -gt 0 ] && $DEBBUILD $DEBPARM $SPECFILE >/dev/null
+    [ $MKRPM -gt 0 ] && $RPMBUILD $RPMPARM $SPECFILE >/dev/null
     ;;
   2|3)
-    [ $MKDEB -gt 0 ] && $DEBBUILD -ba $SPECFILE &>/dev/null
-    [ $MKRPM -gt 0 ] && $RPMBUILD -ba $SPECFILE &>/dev/null
+    [ $MKDEB -gt 0 ] && $DEBBUILD $DEBPARM $SPECFILE &>/dev/null
+    [ $MKRPM -gt 0 ] && $RPMBUILD $RPMPARM $SPECFILE &>/dev/null
     ;;
   *)
-    [ $MKDEB -gt 0 ] && $DEBBUILD -ba $SPECFILE
-    [ $MKRPM -gt 0 ] && $RPMBUILD -ba $SPECFILE
+    [ $MKDEB -gt 0 ] && $DEBBUILD $DEBPARM $SPECFILE
+    [ $MKRPM -gt 0 ] && $RPMBUILD $RPMPARM $SPECFILE
 esac
 
 finito

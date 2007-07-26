@@ -9,6 +9,10 @@ v0.1.3
   to what the make documentation recommends
 ! the -p command line parameter was setting the package name (and not the
   packager, as it should)
++ added MKSDEB and MKSRPM configuration options (and corresponding command line
+  parameters -sdeb, -srpm, -nosdeb, -nosrpm) - source packages are no longer
+  created by default (set MKSDEB=1 and MKSRPM=1 in the configuration file to
+  restore previous behaviour)
 
 v0.1.2 (22.07.2007)
 -------------------
