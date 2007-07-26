@@ -90,16 +90,16 @@ are expected in the Buildroot as a sub directory with the name <PackageName>-<Ve
 Make *.deb (even if config says MKDEB=0)
 .TP
 .B -debopt
-Option(s) to pass to debbuild. Enclose the options in quotes, e.g. \fB-debopt "--clean"\fR.
+Option(s) to pass to debbuild.
 .TP
 .B -descfile
 A file holding the long description for the package. If not given, the summary will
 be used instead.
 .TP
 .B -g
-The software group your package belongs to. Examples are \fB"universe\\/Graphic"\fR
-for a Debian package, or \fB"Applications\\/Graphic"\fR for RPM. Again, escape all
-forward slashes with a backslash.
+The software group your package belongs to. An examples would be
+\fB"Applications\\/Graphic"\fR. Again, escape all forward slashes with a
+backslash.
 .TP
 .B -l
 License of the software. Should be GPL :)

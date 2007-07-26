@@ -49,9 +49,8 @@ License of this software. Usually GPL
 An optional release suffix. Shouldn't be a too long string.
  
 .IP "\fBGROUP\fP" 10 
-Software group for e.g. the menu. On Ubuntu, this usually starts with the
-repository (e.g. "universe"). Again, escape all forward slashes. Examples
-are: "universe\\/Graphic" (Ubuntu/Debian) or "Applications\\/Graphic" (RPM).
+Software group for e.g. the menu (example: \fIApplications\/Internet\fR).
+Again, escape all forward slashes.
 
 .IP "\fBSPECONLY\fP" 10
 If set to "1", pkgmake will only create the .spec file and exit (see also
@@ -87,7 +86,8 @@ Spec file in one archive.
 Create RPM source package (*.src.rpm) by default?
 
 .IP "\fBDEBOPTS\fP" 10
-Define additional command line options to pass to debbuild.
+Define additional command line options to pass to debbuild. Quote special
+characters, e.g. \fBDEBOPTS=\\-\\-define\\ \\'REDHAT 1\\'\fR.
 
 .IP "\fBRPMOPTS\fP" 10
 Define additional command line options to pass to rpmbuild. This is useful e.g.
@@ -95,7 +95,7 @@ if your .spec file contains code which must be handled differently for Debian
 and RPM systems. For this, you could enclose the corresponding part e.g. with
 "%if %{REDHAT} (RPM code here) %else (DEB code here) %endif", and pass the
 parameter "--define 'REDHAT 1'" to rpmbuild (and nothing special to debbuild,
-which then would go to the %else condition).
+which then would go to the %else condition). See \fBDEBOPTS\fR above.
 
 .SH "SEE ALSO" 
 .PP 
