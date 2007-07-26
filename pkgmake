@@ -223,6 +223,7 @@ fi
 
 #-------------------------------------------[ process command line options ]---
 typeset -i SILENT=0
+typeset -i SILENTc=0
 PROG=$1
 VERSION=$2
 while [ "$1" != "" ] ; do
@@ -245,7 +246,7 @@ while [ "$1" != "" ] ; do
     -notar) MKTAR=0;;
     -p) shift; PACKAGER=$1;;
     -prov) shift; PROV=$1;;
-    -q) [ $SILENT -lt 2 ] && let SILENT=$SILENT+1;;
+    -q) [ $SILENTc -lt 2 ] && let SILENTc=$SILENT+1;;
     -Q) QUIET=1;;
     -r) shift; RELEASE=$1;;
     -req) shift; REQ=$1;;
@@ -260,11 +261,13 @@ while [ "$1" != "" ] ; do
   esac
   shift
 done
+[ $SILENTc -gt 0 ] && SILENT=$SILENTc
 
 [ -z "$PROG" ] && help
 [ -z "$VERSION" ] && help
 
 #----------------------------------------------------[ check preconditions ]---
+echo "Silent: $SILENT"
 # SPEC file
 [ -z "$SPECTPL" ] && SPECTPL="${BUILDDEB}/SPECS/${PROG}.tpl"
 [ -f "${SPECTPL}" ] || nospec
