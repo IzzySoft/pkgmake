@@ -283,7 +283,7 @@ if [ $MKTAR -gt 0 ]; then
     cd $SRCDIR
     find . -type d -name "CVS" | xargs rm -fR
     find . -type d -name ".svn" | xargs rm -fR
-    cd -
+    rc=`cd -`
   }
 else
   [ -f ${BUILDDEB}/SOURCES/${PROG}-${VERSION}.tar.gz ] || notar
