@@ -391,20 +391,21 @@ fi
 #---------------------------------------------------[ building the package ]---
 if [ $MKSDEB -eq 0 ]; then DEBPARM="-bb"; else DEBPARM="-ba"; fi
 if [ $MKSRPM -eq 0 ]; then RPMPARM="-bb"; else RPMPARM="-ba"; fi
-say "${blue}* Running ${DEBBUILD}$NC"
-case "$SILENT" in
-  1)
-    [ $MKDEB -gt 0 ] && $DEBBUILD $DEBPARM $DEBOPTS $SPECFILE >/dev/null
-    [ $MKRPM -gt 0 ] && $RPMBUILD $RPMPARM $RPMOPTS $SPECFILE >/dev/null
-    ;;
-  2|3)
-    [ $MKDEB -gt 0 ] && $DEBBUILD $DEBPARM $DEBOPTS $SPECFILE &>/dev/null
-    [ $MKRPM -gt 0 ] && $RPMBUILD $RPMPARM $RPMOPTS $SPECFILE &>/dev/null
-    ;;
-  *)
-    echo "$DEBBUILD $DEBPARM $DEBOPTS $SPECFILE"
-    [ $MKDEB -gt 0 ] && $DEBBUILD $DEBPARM $DEBOPTS $SPECFILE
-    [ $MKRPM -gt 0 ] && $RPMBUILD $RPMPARM $RPMOPTS $SPECFILE
-esac
-
+[ $MKDEB -gt 0 ] && {
+  say "${blue}* Running ${DEBBUILD}$NC"
+  case "$SILENT" in
+    1)   $DEBBUILD $DEBPARM $DEBOPTS $SPECFILE >/dev/null ;;
+    2|3) $DEBBUILD $DEBPARM $DEBOPTS $SPECFILE &>/dev/null ;;
+    *)   $DEBBUILD $DEBPARM $DEBOPTS $SPECFILE ;;
+  esac
+}
+[ $MKRPM -gt 0 ] && {
+  [ $MKDEB -gt 0 ] && say
+  say "${blue}* Running ${RPMBUILD}$NC"
+  case "$SILENT" in
+    1)   $RPMBUILD $RPMPARM $RPMOPTS $SPECFILE >/dev/null ;;
+    2|3) $RPMBUILD $RPMPARM $RPMOPTS $SPECFILE &>/dev/null ;;
+    *)   $RPMBUILD $RPMPARM $RPMOPTS $SPECFILE ;;
+  esac
+}
 finito
