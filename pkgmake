@@ -48,6 +48,9 @@ MKDEB=1					# Make Debian package (*.deb)?
 MKRPM=0					# Make RPM package (*.rpm)?
 MKSDEB=0				# Make Debian source package (*.sdeb)?
 MKSRPM=0				# Make RPM source package (*.src.rpm)?
+#DEBOPTS="--define 'DEBIAN 1'"           # Options for debbuild
+DEBOPTS=""
+RPMOPTS="--define 'REDHAT 1'"           # Options for rpmbuild
 
 # Don't change anything below this line except you know what you're doing
 BINDIR=${0%/*}				# where this script resides
@@ -230,6 +233,7 @@ while [ "$1" != "" ] ; do
     -conf) shift; CONF=$1;;
     -d) shift; SRCDIR=$1;;
     -deb) MKDEB=1;;
+    -debopt) shift; DEBOPTS=$1;;
     -descfile) shift; DESCFILE=$1;;
     -g) shift; GROUP=$1;;
     -l) shift; LICENSE=$1;;
@@ -246,6 +250,7 @@ while [ "$1" != "" ] ; do
     -r) shift; RELEASE=$1;;
     -req) shift; REQ=$1;;
     -rpm) MKRPM=1;;
+    -rpmopt) shift; RPMOPTS=$1;;
     -s) shift; SUMMARY=$1;;
     -sdeb) MKSDEB=1;;
     -speconly) SPECONLY=1;;
@@ -386,16 +391,17 @@ if [ $MKSRPM -eq 0 ]; then RPMPARM="-bb"; else RPMPARM="-ba"; fi
 say "${blue}* Running ${DEBBUILD}$NC"
 case "$SILENT" in
   1)
-    [ $MKDEB -gt 0 ] && $DEBBUILD $DEBPARM $SPECFILE >/dev/null
-    [ $MKRPM -gt 0 ] && $RPMBUILD $RPMPARM $SPECFILE >/dev/null
+    [ $MKDEB -gt 0 ] && $DEBBUILD $DEBPARM $DEBOPTS $SPECFILE >/dev/null
+    [ $MKRPM -gt 0 ] && $RPMBUILD $RPMPARM $RPMOPTS $SPECFILE >/dev/null
     ;;
   2|3)
-    [ $MKDEB -gt 0 ] && $DEBBUILD $DEBPARM $SPECFILE &>/dev/null
-    [ $MKRPM -gt 0 ] && $RPMBUILD $RPMPARM $SPECFILE &>/dev/null
+    [ $MKDEB -gt 0 ] && $DEBBUILD $DEBPARM $DEBOPTS $SPECFILE &>/dev/null
+    [ $MKRPM -gt 0 ] && $RPMBUILD $RPMPARM $RPMOPTS $SPECFILE &>/dev/null
     ;;
   *)
-    [ $MKDEB -gt 0 ] && $DEBBUILD $DEBPARM $SPECFILE
-    [ $MKRPM -gt 0 ] && $RPMBUILD $RPMPARM $SPECFILE
+    echo "$DEBBUILD $DEBPARM $DEBOPTS $SPECFILE"
+    [ $MKDEB -gt 0 ] && $DEBBUILD $DEBPARM $DEBOPTS $SPECFILE
+    [ $MKRPM -gt 0 ] && $RPMBUILD $RPMPARM $RPMOPTS $SPECFILE
 esac
 
 finito

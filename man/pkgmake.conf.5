@@ -86,6 +86,17 @@ Spec file in one archive.
 .IP "\fBMKSRPM\fP" 10
 Create RPM source package (*.src.rpm) by default?
 
+.IP "\fBDEBOPTS\fP" 10
+Define additional command line options to pass to debbuild.
+
+.IP "\fBRPMOPTS\fP" 10
+Define additional command line options to pass to rpmbuild. This is useful e.g.
+if your .spec file contains code which must be handled differently for Debian
+and RPM systems. For this, you could enclose the corresponding part e.g. with
+"%if %{REDHAT} (RPM code here) %else (DEB code here) %endif", and pass the
+parameter "--define 'REDHAT 1'" to rpmbuild (and nothing special to debbuild,
+which then would go to the %else condition).
+
 .SH "SEE ALSO" 
 .PP 
 pkgmake(8)

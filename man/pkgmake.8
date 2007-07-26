@@ -12,6 +12,7 @@ pkgmake - create RPM spec files and build *.rpm/*.deb packages
 .RB [ "-conf \fI'conf files'\fR" ]
 .RB [ "-d \fIdirectory-root\fR" ]
 .RB [ "-deb" ]
+.RB [ "-debopt '\fIoption\fR [ option ...]' " ]
 .RB [ "-descfile \fIdescription-file\fR" ]
 .RB [ "-g \fIgroup\fR" ]
 .RB [ "-l \fIlicense\fR" ]
@@ -24,6 +25,7 @@ pkgmake - create RPM spec files and build *.rpm/*.deb packages
 .RB [ "-r \fIrelease\fR" ]
 .RB [ "-req \fI'requires what'\fR" ]
 .RB [ "-rpm" ]
+.RB [ "-rpmopt '\fIoption\fR [ option ...]' " ]
 .RB [ "-q" ]
 .RB [ "-Q" ]
 .RB [ "-s \fI'short summary'\fR" ]
@@ -87,6 +89,9 @@ are expected in the Buildroot as a sub directory with the name <PackageName>-<Ve
 .B -deb
 Make *.deb (even if config says MKDEB=0)
 .TP
+.B -debopt
+Option(s) to pass to debbuild. Enclose the options in quotes, e.g. \fB-debopt "--clean"\fR.
+.TP
 .B -descfile
 A file holding the long description for the package. If not given, the summary will
 be used instead.
@@ -139,6 +144,11 @@ What other packages this package depends on. Same rules as with \fB-prov\fR
 .TP
 .B -rpm
 Make *.rpm (even if config says MKRPM=0)
+.TP
+.B -rpmopt
+Option(s) to pass to rpmbuild. Enclose the options in quotes, e.g. \fB-rpmopt "--clean"\fR.
+See the \fBRPMOPTS\fR configuration option in \fIman pkgmake.conf\fR for more
+details.
 .TP
 .B -q
 Tell the sub-processes to be quiet. You can use this option up to 2 times on
