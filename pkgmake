@@ -53,6 +53,7 @@ MKSRPM=0				# Make RPM source package (*.src.rpm)?
 BINDIR=${0%/*}				# where this script resides
 PREFIX="/"				# absolute path needed for *.deb
 TMPFILE="/tmp/flist.$$"			# we need some tempfile
+QUIET=0                                 # Shall we shutup ourself?
 PKGMV=0.1.2                             # Version of this script
 
 #-----------------------------------------------------------------[ Colors ]---
@@ -99,7 +100,8 @@ function help {
   echo "     -r <release>               Release of this version (default: ${RELEASE})"
   echo "     -req <requires>            Space separated list of required packages"
   echo "     -rpm			Make *.rpm even if MKRPM=0"
-  echo "     -q	                        Be Quiet"
+  echo "     -q	                        Be Quiet (subprocesses)"
+  echo "     -Q	                        Be Quiet (ourself)"
   echo "     -s <summary>               Short description (put in quotes!)"
   echo "     -sdeb			Make Debian source package (*.sdeb)"
   echo "     -speconly                  Only create the SPEC file and exit, no build"
@@ -121,9 +123,11 @@ function help {
   echo
   echo " The SPEC template file must reside in the ${BUILDDEB}/SPEC directory."
   echo
-  echo " -q may be specified (up to 3 times) to make the script more quiet (one -q suppresses"
-  echo " the load of STDOUT from the build process. The second -q additionally suppresses"
-  echo " its still talkative STDERR. A third would even make STDOUT from this script calm."
+  echo " -q may be specified (up to 2 times) to suppress output from sub-processes (the"
+  echo " first -q suppresses STDOUT, the second -q STDERR). To calm down pkgmake itself"
+  echo " use -Q. If you don't want any output (except for STDERR from pkgmake itself),"
+  echo " specify \"-Q -q -q\". To suppress all output, redirect it using e.g."
+  echo " \"&>/dev/null\" as the last \"parameter\" on the command line."
   echo
   echo "When specifying a changelog file with the '-c' switch, take care of its syntax:"
   echo "Newest entries must be on top. For the format, see the changelog entry added by"
@@ -135,7 +139,7 @@ function help {
 
 #-----------------------------------------------[ Show progress (or don't) ]---
 function say {
-  [ $SILENT -lt 3 ] && echo -e "$1"
+  [ $QUIET -eq 0 ] && echo -e "$1"
 }
 
 #------------------[ Read one char user input and convert it to lower case ]---
@@ -155,7 +159,7 @@ function stayorgo {
 
 #---------------------------------------------------[ Output script header ]---
 function header {
-  [ $SILENT -lt 3 ] && clear
+  [ $QUIET -eq 0 ] && clear
   say "${blue}pkgmake v${PKGMV}"
   say "--------------"
   say
@@ -237,7 +241,8 @@ while [ "$1" != "" ] ; do
     -notar) MKTAR=0;;
     -p) shift; PACKAGER=$1;;
     -prov) shift; PROV=$1;;
-    -q) let SILENT=$SILENT+1;;
+    -q) [ $SILENT -lt 2 ] && let SILENT=$SILENT+1;;
+    -Q) QUIET=1;;
     -r) shift; RELEASE=$1;;
     -req) shift; REQ=$1;;
     -rpm) MKRPM=1;;

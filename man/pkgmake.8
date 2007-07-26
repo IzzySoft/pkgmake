@@ -4,33 +4,34 @@
 pkgmake - create RPM spec files and build *.rpm/*.deb packages
 .SH SYNOPSIS
 .B pkgmake
-.RB < "\fIPackageName" >
-.RB < "\fIVersion" >
-.RB [ "-a \fIauthor" ]
-.RB [ "-b \fIbuild-architecture" ]
-.RB [ "-c \fIchangelog-file" ]
-.RB [ "-conf \fI'conf files'" ]
-.RB [ "-d \fIdirectory-root" ]
+.RB < "\fIPackageName\fR" >
+.RB < "\fIVersion\fR" >
+.RB [ "-a \fIauthor\fR" ]
+.RB [ "-b \fIbuild-architecture\fR" ]
+.RB [ "-c \fIchangelog-file\fR" ]
+.RB [ "-conf \fI'conf files'\fR" ]
+.RB [ "-d \fIdirectory-root\fR" ]
 .RB [ "-deb" ]
-.RB [ "-descfile \fIdescription-file" ]
-.RB [ "-g \fIgroup" ]
-.RB [ "-l \fIlicense" ]
+.RB [ "-descfile \fIdescription-file\fR" ]
+.RB [ "-g \fIgroup\fR" ]
+.RB [ "-l \fIlicense\fR" ]
 .RB [ "-nosdeb" ]
 .RB [ "-nosrpm" ]
 .RB [ "-notar" ]
 .RB [ "-nonukecvs" ]
-.RB [ "-p \fIpackager" ]
-.RB [ "-prov \fI'provides what'" ]
-.RB [ "-r \fIrelease" ]
-.RB [ "-req \fI'requires what'" ]
+.RB [ "-p \fIpackager\fR" ]
+.RB [ "-prov \fI'provides what'\fR" ]
+.RB [ "-r \fIrelease\fR" ]
+.RB [ "-req \fI'requires what'\fR" ]
 .RB [ "-rpm" ]
 .RB [ "-q" ]
-.RB [ "-s \fI'short summary'" ]
+.RB [ "-Q" ]
+.RB [ "-s \fI'short summary'\fR" ]
 .RB [ "-sdeb" ]
 .RB [ "-speconly" ]
 .RB [ "-srpm" ]
-.RB [ "-t \fItemplate-file" ]
-.RB [ "-u \fIvendor-URL" ]
+.RB [ "-t \fItemplate-file\fR" ]
+.RB [ "-u \fIvendor-URL\fR" ]
 
 .SH DESCRIPTION
 pkgmake is just a simple shell script to create RPM *.spec files and per
@@ -59,10 +60,10 @@ The version of the release you are going to build.
 Used to override the default author of the software you are going to package.
 The default author is configured inside the pkgmake shell script itself and
 may be modified there as well. The syntax to use is:
-name <email@address>
+\fBname <email@address>\fR
 .TP
 .B -b
-Target BuildArchitecture. Something like i386, athlon, or noarch.
+Target BuildArchitecture. Something like \fBi386\fR, \fBathlon\fR, or \fBnoarch\fR.
 .TP
 .B -c
 A file holding the changelog of the software. The content must conform to the
@@ -76,7 +77,7 @@ configuration files (i.e. don't overwrite on install but create a copy, don't
 remove on deletion except if --purge is specified). You must enclose this list
 with single quotes, and escape all forward slashes (i.e. "/") by a backslash
 (i.e. "\\").
-An example: -conf '\\/some\\/file \\/another\\/file'
+An example: \fB-conf '\\/some\\/file \\/another\\/file'\fR
 .TP
 .B -d
 Directory to use for a work copy. If used, this directory (and all its content)
@@ -91,8 +92,8 @@ A file holding the long description for the package. If not given, the summary w
 be used instead.
 .TP
 .B -g
-The software group your package belongs to. Examples are "universe\\/Graphic"
-for a Debian package, or "Applications\\/Graphic" for RPM. Again, escape all
+The software group your package belongs to. Examples are \fB"universe\\/Graphic"\fR
+for a Debian package, or \fB"Applications\\/Graphic"\fR for RPM. Again, escape all
 forward slashes with a backslash.
 .TP
 .B -l
@@ -110,7 +111,7 @@ Don't make *.rpm (even if config says MKRPM=1)
 .TP
 .B -nosdeb
 Don't create Debian sourcce package (*.sdeb). Since these source packages only
-make sense to people using debbuild, they should normally not be build. The only
+make sense to people using debbuild, they should normally \fInot\fR be build. The only
 reason could be for you to store the source tarball together with the Spec file
 in one archive.
 .TP
@@ -123,7 +124,7 @@ already exists in the SOURCES/ directory with the correct naming conventions.
 Even if you specify a directory with -d, that will be ignored in this case.
 .TP
 .B -p
-The packager - you, if you build the package. Same rules as with -a
+The packager - you, if you build the package. Same rules as with \fB-a\fR
 .TP
 .B -prov
 What the package provides. This could be either the names of the main executables,
@@ -134,23 +135,27 @@ other packages.
 The release tag for this package.
 .TP
 .B -req
-What other packages this package depends on. Same rules as with -prov
+What other packages this package depends on. Same rules as with \fB-prov\fR
 .TP
 .B -rpm
 Make *.rpm (even if config says MKRPM=0)
 .TP
 .B -q
-Tell the script to be quiet. You can use this option up to 3 times on one call:
-One -q suppresses the load of STDOUT from the build process. The second -q
-additionally suppresses its still talkative STDERR. A third would even make
-STDOUT from this script calm.
+Tell the sub-processes to be quiet. You can use this option up to 2 times on
+one call (starting from the 3rd time, it will simply be ignored): One -q
+suppresses the load of STDOUT from the build process. The second -q
+additionally suppresses its still talkative STDERR.
+.TP
+.B -Q
+Be Quiet ourselves: Don't issue any output on STDOUT ourselves (doesn't apply
+to the sub-processes - see \fB-q\fR for them).
 .TP
 .B -s
 Give a short summary what your package is about. Enclose in quotes, escape all
 forward slashes with backslashes again.
 .TP
 .B -sdeb
-Create Debian source package. See -nosdeb above for details.
+Create Debian source package. See \fB-nosdeb\fR above for details.
 .TP
 .B -speconly
 Only create the *.spec file - don't run the package build process.
@@ -170,7 +175,7 @@ details).
 .TP
 .B -u
 Specify a vendor URL. Again, forward slashes have to be escaped with
-backslashes, e.g. http:\\/\\/www.domain.com\\/
+backslashes, e.g. \fB-u "http:\\/\\/www.domain.com\\/"\fR
 
 .SH "CONFIGURATION"
 Configuration can be done in either ~/.pkgmakerc, /etc/pkgmake.conf or the

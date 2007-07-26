@@ -13,6 +13,10 @@ v0.1.3
   parameters -sdeb, -srpm, -nosdeb, -nosrpm) - source packages are no longer
   created by default (set MKSDEB=1 and MKSRPM=1 in the configuration file to
   restore previous behaviour)
+* changed the "silencing" parameters: \"-q -q\" as before (turn off STDOUT and
+  STDERR from sub-processes, i.e. debbuild/rpmbuild). But: -Q to make pkgmake
+  itself silent. This way you can tell pkgmake to "shut up" while still having
+  the output from debbuild/rpmbuild.
 
 v0.1.2 (22.07.2007)
 -------------------
