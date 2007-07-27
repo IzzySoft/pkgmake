@@ -25,8 +25,9 @@ install: installdirs
 	$(INSTALL_DATA) -c pkgmake.conf $(DESTDIR)$(sysconfdir)
 	$(INSTALL) -c pkgmake $(DESTDIR)$(bindir)
 	$(INSTALL_DATA) -c doc/* $(DESTDIR)$(docdir)
-	$(INSTALL_DATA) -c man/*.5 $(DESTDIR)$(man5dir)
-	$(INSTALL_DATA) -c man/*.8 $(DESTDIR)$(man8dir)
+	gzip man/*
+	$(INSTALL_DATA) -c man/*.5* $(DESTDIR)$(man5dir)
+	$(INSTALL_DATA) -c man/*.8* $(DESTDIR)$(man8dir)
 	$(INSTALL_DATA) -c tpl/* $(SPECDIR)
 
 uninstall:
