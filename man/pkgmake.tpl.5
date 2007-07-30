@@ -1,4 +1,4 @@
-.TH "PKGMAKE.TPL" "5" "19 July 2007"
+.TH "PKGMAKE.TPL" "5" "30 July 2007"
 .SH "NAME" 
 pkgmake.tpl \- Template files for \fBpkgmake\fR, which creates RPM spec
 files and builds *.rpm/*.deb packages
@@ -51,6 +51,10 @@ must \fBNOT\fP use the __DIR__ variable.
 Gets replaced by the $GROUP variable (or what you specified with the -g
 command line parameter). See \fI/usr/share/doc/rpm/GROUPS\fR for available
 group definitions.
+
+If the \fB-section\fR parameter is specified (or the \fBSECTION\fR configuration
+parameter is set), \fB__GROUP__\fR gets replaced by the given section name \fBfor
+the Debian .dspec file only\fR, while the RPM .spec file still will use the group.
  
 .IP "\fB__LICENSE__\fP" 10
 Will be replaced with the $LICENSE (-l) - usually GPL :)

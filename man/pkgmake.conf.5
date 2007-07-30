@@ -1,4 +1,4 @@
-.TH "PKGMAKE.CONF" "5" "26 July 2007"
+.TH "PKGMAKE.CONF" "5" "30 July 2007"
 .SH "NAME" 
 pkgmake.conf \- Configuration file for \fBpkgmake\fR, which creates RPM spec
 files and builds *.rpm/*.deb packages
@@ -51,6 +51,25 @@ An optional release suffix. Shouldn't be a too long string.
 .IP "\fBGROUP\fP" 10 
 Software group for e.g. the menu (example: \fIApplications\\/Internet\fR).
 Again, escape all forward slashes.
+
+.IP "\fBSECTION\fP" 10
+Usually, .spec files are generated for rpmbuild - and thus should apply to the
+RPM specifications. RPM classifies software by groups, which are unfortunately
+not the same as the sections used by Debian. If your Software e.g. belongs to
+the group "Development/Tools", the corresponding section for Debian most likely
+would be "devel" - while "Applications/Databases" has no corresponding section
+and probably goes to "misc".
+
+It is obvious that these sections would cause problems when bound into a RPM
+package, even if rpmbuild will build it. So this leaves us with two choices:
+Either break RPM - or have a separate spec file for debbuild. If you are
+\fBnot\fR going to build any RPM packages, you can stay with the \fBGROUP\fR
+keyword (see above) instead. If you are building RPM packages only - this
+question doesn't come up. But if you want to build \fBboth\fR RPM and DEB at
+the same time, this is for you: The \fBSECTION\fR keyword (or \fB-section\fR
+switch at the command line) tells pkgmake to build a separate .dspec file
+with the given section and hands this to debbuild, while rpmbuild will be given
+the correct .spec file.
 
 .IP "\fBSPECONLY\fP" 10
 If set to "1", pkgmake will only create the .spec file and exit (see also

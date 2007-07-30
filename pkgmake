@@ -40,7 +40,8 @@ PACKAGER="root <root@`hostname`>" 	# Who made the package
 BUILDARCH="noarch"                      # Target Architecture (noarch,i386,...)
 LICENSE="GPL"                           # License of the program
 RELEASE="1"                        	# Release of this version
-GROUP="universe\/Misc"              	# Repository group this goes to
+GROUP="Applications\/Internet"         	# RPM group this goes to
+SECTION=""              	        # Debian section this goes to
 SPECONLY=0                              # we not only create the spec by default
 MKTAR=1                                 # Create tarball from source
 NUKECVS=1                               # Cleanup CVS/* and .svn/* from source?
@@ -50,14 +51,14 @@ MKSDEB=0				# Make Debian source package (*.sdeb)?
 MKSRPM=0				# Make RPM source package (*.src.rpm)?
 #DEBOPTS="--define 'DEBIAN 1'"           # Options for debbuild
 DEBOPTS=""
-RPMOPTS=\-\-define\ \'REDHAT 1\'           # Options for rpmbuild
+#RPMOPTS=\-\-define\ \'REDHAT 1\'           # Options for rpmbuild
 
 # Don't change anything below this line except you know what you're doing
 BINDIR=${0%/*}				# where this script resides
 PREFIX="/"				# absolute path needed for *.deb
 TMPFILE="/tmp/flist.$$"			# we need some tempfile
 QUIET=0                                 # Shall we shutup ourself?
-PKGMV=0.1.2                             # Version of this script
+PKGMV=0.1.4                             # Version of this script
 
 #-----------------------------------------------------------------[ Colors ]---
 red='\e[0;31m'
@@ -107,6 +108,7 @@ function help {
   echo "     -Q	                        Be Quiet (ourself)"
   echo "     -s <summary>               Short description (put in quotes!)"
   echo "     -sdeb			Make Debian source package (*.sdeb)"
+  echo "     -section <section>         Make separate *.dspec file with given section"
   echo "     -speconly                  Only create the SPEC file and exit, no build"
   echo "     -srpm			Make RPM source package (*.src.rpm)"
   echo "     -t <TemplateFile>          Template file (default: <PackageName>.tpl)"
@@ -254,6 +256,7 @@ while [ "$1" != "" ] ; do
     -rpmopt) shift; RPMOPTS=$1;;
     -s) shift; SUMMARY=$1;;
     -sdeb) MKSDEB=1;;
+    -section) shift; SECTION=$1;;
     -speconly) SPECONLY=1;;
     -srpm) MKSRPM=1;;
     -t) shift; SPECTPL="${BUILDDEB}/SPECS/$1";;
@@ -267,7 +270,6 @@ done
 [ -z "$VERSION" ] && help
 
 #----------------------------------------------------[ check preconditions ]---
-echo "Silent: $SILENT"
 # SPEC file
 [ -z "$SPECTPL" ] && SPECTPL="${BUILDDEB}/SPECS/${PROG}.tpl"
 [ -f "${SPECTPL}" ] || nospec
@@ -308,6 +310,7 @@ header
 #----------------------------------------------------[ preparing SPEC file ]---
 say "${blue}* Preparing SPEC file$NC"
 SPECFILE=${BUILDDEB}/SPECS/${PROG}-${VERSION}.spec
+DSPECFILE=${BUILDDEB}/SPECS/${PROG}-${VERSION}.dspec
 cd "${BUILDDEB}/BUILD/${PROG}-${VERSION}"
 # Setup filelist
 for i in *; do
@@ -344,7 +347,7 @@ done
 cat $SPECTPL | sed "s/__RELEASE__/${RELEASE}/g" | sed "s/__NAME__/${PROG}/g" \
  | sed "s/__VENDOR__/${VENDOR}/g" | sed "s/__PACKAGER__/${PACKAGER}/g" \
  | sed "s/__BUILDARCH__/${BUILDARCH}/g" | sed "s/__CONFIG__/${CONFIG}/g" \
- | sed "s/__SUMMARY__/${SUMMARY}/g" | sed "s/__GROUP__/${GROUP}/g" \
+ | sed "s/__SUMMARY__/${SUMMARY}/g" \
  | sed "s/__LICENSE__/${LICENSE}/g" | sed "s/__VERSION__/${VERSION}/g" \
  | sed "/__DIR__/ r ${TMPFILE}" | sed "/__DIR__/ d" > $SPECFILE
 if [ -f "${DESCFILE}" ]; then
@@ -371,11 +374,16 @@ if [ -n "${PROVIDES}" ]; then
 else
   cat $TMPFILE | sed "/__PROVIDES__/ d" > $SPECFILE
 fi
+# Debian section?
+[ -n "$SECTION" ] && {
+  cat $TMPFILE | sed "s/__GROUP__/${SECTION}/g" >$DSPECFILE
+}
+# RPM group
+cat $TMPFILE | sed "s/__GROUP__/${GROUP}/g" >$SPECFILE
 # ChangeLog:
 echo "* `LANG=en_EN date +"%a %b %d %Y"` ${PACKAGER}"> $TMPFILE
 echo "- packaged version ${VERSION}-${RELEASE} of ${PROG}" >>$TMPFILE
 [ -n "${CHANGELOG}" ] && [ -f "${CHANGELOG}" ] && cat ${CHANGELOG} >> $TMPFILE
-cat $TMPFILE >> $SPECFILE
 
 rm -f $TMPFILE
 
@@ -393,10 +401,11 @@ if [ $MKSDEB -eq 0 ]; then DEBPARM="-bb"; else DEBPARM="-ba"; fi
 if [ $MKSRPM -eq 0 ]; then RPMPARM="-bb"; else RPMPARM="-ba"; fi
 [ $MKDEB -gt 0 ] && {
   say "${blue}* Running ${DEBBUILD}$NC"
+  [ -z "$SECTION" ] && DSPECFILE=$SPECFILE
   case "$SILENT" in
-    1)   $DEBBUILD $DEBPARM $DEBOPTS $SPECFILE >/dev/null ;;
-    2|3) $DEBBUILD $DEBPARM $DEBOPTS $SPECFILE &>/dev/null ;;
-    *)   $DEBBUILD $DEBPARM $DEBOPTS $SPECFILE ;;
+    1)   $DEBBUILD $DEBPARM $DEBOPTS $DSPECFILE >/dev/null ;;
+    2|3) $DEBBUILD $DEBPARM $DEBOPTS $DSPECFILE &>/dev/null ;;
+    *)   $DEBBUILD $DEBPARM $DEBOPTS $DSPECFILE ;;
   esac
 }
 [ $MKRPM -gt 0 ] && {
