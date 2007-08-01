@@ -10,9 +10,8 @@ exec_prefix=$(prefix)
 bindir=$(exec_prefix)/bin
 datarootdir=$(prefix)/share
 datadir=$(datarootdir)
-sysconfdir=$(prefix)/etc
 docdir=$(datarootdir)/doc/pkgmake
-sysconfdir=/etc
+sysconfdir=/etc/pkgmake
 mandir=$(datarootdir)/man
 man5dir=$(mandir)/man5
 man8dir=$(mandir)/man8
@@ -23,6 +22,7 @@ SPECDIR=$(RPMROOT)/SPECS
 
 install: installdirs
 	$(INSTALL_DATA) -c pkgmake.conf $(DESTDIR)$(sysconfdir)
+	$(INSTALL_DATA) -c version $(DESTDIR)$(sysconfdir)
 	$(INSTALL) -c pkgmake $(DESTDIR)$(bindir)
 	$(INSTALL_DATA) -c doc/* $(DESTDIR)$(docdir)
 	gzip man/*
@@ -31,7 +31,7 @@ install: installdirs
 	$(INSTALL_DATA) -c tpl/* $(SPECDIR)
 
 uninstall:
-	rm -f $(DESTDIR)$(sysconfdir)/pkgmake.conf
+	rm -f $(DESTDIR)$(sysconfdir)
 	rm -f $(DESTDIR)$(bindir)/pkgmake
 	rm -rf $(DESTDIR)$(docdir)
 	rm -f $(DESTDIR)$(man5dir)/pkgmake.*
