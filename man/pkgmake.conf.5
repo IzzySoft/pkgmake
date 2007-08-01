@@ -116,6 +116,10 @@ and RPM systems. For this, you could enclose the corresponding part e.g. with
 parameter "--define 'REDHAT 1'" to rpmbuild (and nothing special to debbuild,
 which then would go to the %else condition). See \fBDEBOPTS\fR above.
 
+.IP "\fBRMDSPEC\fR" 10
+Shall we remove the .dspec file (if created) after processing (1) or not (0)?
+See \fBSECTION\fR above for details on the .dspec file.
+
 .SH "SEE ALSO" 
 .PP 
 pkgmake(8)

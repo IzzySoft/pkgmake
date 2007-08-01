@@ -17,6 +17,7 @@ pkgmake - create RPM spec files and build *.rpm/*.deb packages
 .RB [ "-descfile \fIdescription-file\fR" ]
 .RB [ "-g \fIgroup\fR" ]
 .RB [ "-l \fIlicense\fR" ]
+.RB [ "-keepdspec" ]
 .RB [ "-nosdeb" ]
 .RB [ "-nosrpm" ]
 .RB [ "-notar" ]
@@ -105,6 +106,9 @@ backslash.
 .IP "\fB-l\fR"
 License of the software. Should be GPL :)
 
+.IP "\fB-keepdspec\fR"
+Don't remove the .dspec file after processing (see \fB-section\fR below for details)
+
 .IP "\fB-nodeb\fR"
 Don't make *.deb (even if config says MKDEB=1)
 
@@ -184,7 +188,8 @@ instead. If you are building RPM packages only - this question doesn't come up.
 But if you want to build \fBboth\fR RPM and DEB at the same time, this is for
 you: The \fB-section\fR switch tells pkgmake to build a separate .dspec file
 with the given section and hands this to debbuild, while rpmbuild will be given
-the correct .spec file.
+the correct .spec file. The only difference between the .spec and the .dspec
+files created is the value for the "Group:" statement.
 
 .IP "\fB-speconly\fR"
 Only create the *.spec file - don't run the package build process.
