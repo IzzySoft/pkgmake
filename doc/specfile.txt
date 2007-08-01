@@ -3,19 +3,20 @@ Debian/RPM Paket Builder        (c) 2007 by Itzchak Rehberg (devel@izzysoft.de)
 -------------------------------------------------------------------------------
 $Id$
 -------------------------------------------------------------------------------
-Create RPM SPEC files and build *.deb / *.rpm out of those
+Create RPM SPEC files and build *.deb / *.rpm out of these
 ===============================================================================
 
 Hints for the SPEC file template:
 =================================
 
 * To add an entire directory including all subdirs and files, simply add the
-  (top) directory in the %files section *BEFORE* the %config keyword, e.g.:
+  (top) directory in the %files section *BEFORE* the %config keyword (if any),
+  e.g.:
 
   %files
-  %defattr(-,www-data,www-data)
-  /var/www/phpdivelog
-  %config /var/www/phpdivelog/inc/config.inc
+  %defattr(-,root,root)
+  /usr/share/dummy
+  %config /usr/share/dummy/inc/config.inc
 
 * Lazy to add any file locations? Simply add the __DIR__ placeholder in the
   %files section. This will be replaced by a complete file list (all files
@@ -23,9 +24,9 @@ Hints for the SPEC file template:
   the manpage - "man pkgmake.tpl" - carefully!). Example:
 
   %files
-  %defattr(-,www-data,www-data)
+  %defattr(-,root,root)
   __DIR__
-  %config /var/www/phpdivelog/inc/config.inc
+  %config /usr/share/dummy/inc/config.inc
 
 * For now, leave the %changelog section empty. pkgmake will add your specified
   CHANGELOG file (if any) and a fake changelog entry itself. It does not yet

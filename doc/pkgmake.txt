@@ -126,4 +126,16 @@ calling "man pkgmake", "man pkgmake.conf" and "man pkgmake.tpl".
 7) Additional Information
 -------------------------
 
-Will be added soon :)
+To get more detailed information on the syntax of command line parameters,
+please refer to the manpage of pkgmake(8). For the config file, there is a
+manpage available for pkgmake.conf(5) - and for the template file you will
+find more information in the manpage for pkgmake.tpl(5).
+
+For information on the development as well as availability of new versions, you
+may want to visit the authors website, more precisely:
+  http://www.izzysoft.de/?topic=software
+or the project page on Freshmeat:
+  http://freshmeat.net/projects/pkgmake
+On the first mentioned page, you will also find more information about other
+programs written by the author - as you will on Freshmeat when visiting
+  http://freshmeat.net/~izzysoft/

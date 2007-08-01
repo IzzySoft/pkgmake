@@ -73,12 +73,12 @@ function help {
   clear
   echo
   echo -e "${blue}==============================================================================="
-  echo "Debian Paket Builder v${PKGMV} (c) 2007 by Itzchak Rehberg (devel@izzysoft.de)"
+  echo "Package Builder v${PKGMV}          (c) 2007 by Itzchak Rehberg (devel@izzysoft.de)"
   echo -e "-------------------------------------------------------------------------------$NC"
-  echo This script is a wrapper to debbuild, which is a wrapper to the Debian package
-  echo building binaries. It shall simplify the build process for developers by auto-
-  echo matizing mosts steps.
-  echo Distributed under the terms of the GPL. No warranties - use at your own risk!
+  echo "This script is a wrapper to debbuild  (which is a wrapper to the Debian package"
+  echo "building binaries)  and  rpmbuild.   It shall  simplify  the build process  for"
+  echo "developers by automatizing mosts steps."
+  echo "Distributed under the terms of the GPL. No warranties - use at your own risk!"
   echo -e "${blue}-------------------------------------------------------------------------------$NC"
   echo "Syntax: ${SCRIPT} <PackageName> <Version> [Options]"
   echo "  Parameter:"
@@ -116,29 +116,9 @@ function help {
   echo "     -t <TemplateFile>          Template file (default: <PackageName>.tpl)"
   echo "     -u <vendor URL>            Vendor URL for this package (default: ${VENDORURL})"
   echo
-  echo "  Example: Build a *.deb for dummy v0.1.1, files are already in"
-  echo "  ${BUILDDEB}/BUILD/dummy-0.1.1"
-  echo "    ${SCRIPT} dummy 0.1.1 -s 'This is a dummy package'"
-  echo "  Example: Same, but files are located in /usr/local/src/dummy"
-  echo "    ${SCRIPT} dummy 0.1.1 -d /usr/local/dummy -s 'This is a dummy package'"
-  echo "  Example: Like the first, send the package to 'universe/Graphic':"
-  echo "    ${SCRIPT} dummy 0.1.1 -s 'This is a dummy package' -g 'universe\/Graphic'"
-  echo "  Example: Our dummy requires httpd and PHP:"
-  echo "    ${SCRIPT} dummy 0.1.1 -s 'This is a dummy package' -req 'http phpapi'"
-  echo "  Example: The description for our dummy shall be read from a file:"
-  echo "    ${SCRIPT} dummy 0.1.1 -s 'This is a dummy package' -descfile ${BUILDDEB}/SPEC/dummy.desc"
-  echo
   echo " The SPEC template file must reside in the ${BUILDDEB}/SPEC directory."
   echo
-  echo " -q may be specified (up to 2 times) to suppress output from sub-processes (the"
-  echo " first -q suppresses STDOUT, the second -q STDERR). To calm down pkgmake itself"
-  echo " use -Q. If you don't want any output (except for STDERR from pkgmake itself),"
-  echo " specify \"-Q -q -q\". To suppress all output, redirect it using e.g."
-  echo " \"&>/dev/null\" as the last \"parameter\" on the command line."
-  echo
-  echo "When specifying a changelog file with the '-c' switch, take care of its syntax:"
-  echo "Newest entries must be on top. For the format, see the changelog entry added by"
-  echo "this script in the resulting SPEC file."
+  echo "See 'man pkgmake' for more information."
   echo -e "${blue}===============================================================================$NC"
   echo
   exit
@@ -385,9 +365,18 @@ mv $SPECFILE $TMPFILE
 # RPM group
 cat $TMPFILE | sed "s/__GROUP__/${GROUP}/g" >$SPECFILE
 # ChangeLog:
+if [ -n "$PKGMAKE_USED" ]; then
+  PKGMAKE_USED="using pkgmake v${PKGMV} & ${PKGMAKE_USED}"
+else
+  PKGMAKE_USED="using pkgmake v${PKGMV}"
+fi
 echo "* `LANG=en_EN date +"%a %b %d %Y"` ${PACKAGER}"> $TMPFILE
-echo "- packaged version ${VERSION}-${RELEASE} of ${PROG}" >>$TMPFILE
+echo "- packaged ${PROG}_${VERSION}-${RELEASE} ${PKGMAKE_USED}" >>$TMPFILE
 [ -n "${CHANGELOG}" ] && [ -f "${CHANGELOG}" ] && cat ${CHANGELOG} >> $TMPFILE
+cat $TMPFILE >> $SPECFILE
+[ -n "$SECTION" ] && {
+  cat $TMPFILE >>$DSPECFILE
+}
 
 rm -f $TMPFILE
 
