@@ -211,6 +211,69 @@ details).
 Specify a vendor URL. Again, forward slashes have to be escaped with
 backslashes, e.g. \fB-u "http:\\/\\/www.domain.com\\/"\fR
 
+.SH "EXAMPLES"
+Here are some examples of calling pkgmake from the command line. How many (and
+which) command line parameters you will need, depends on several conditions:
+.IP - 3
+how close the settings in your configuration file match the project
+.IP - 3
+whether your sources already reside in the build directory
+.IP - 3
+which replacement variables you used in your template file (and thus may need to
+pass the values on the command line)
+.PP
+To just mention some of them. So here we go with some examples:
+
+Build a *.deb for dummy v0.1.1, files are already in the build directory, and
+all replacement variables used in the template files get matched by your
+configuration:
+.IP "" 3
+pkgmake dummy 0.1.1
+.PP
+The same, but source is located in /usr/local/src/dummy and you need to pass
+the summary:
+.IP "" 3
+pkgmake dummy 0.1.1 -d /usr/local/dummy -s 'This is a dummy package'
+.PP
+Like the first case, but you need to specify a group - and want to investigate
+the .spec file first (so pkgmake shall not call debbuild / rpmbuild):
+.IP "" 3
+pkgmake dummy 0.1.1 -g 'Amusements\\/Graphics' -speconly
+.PP
+The same, but as we want to build for Debian, we need to specify the
+corresponding section (since we build nothing, there will be no messed-up .rpm
+file as a side-effect):
+.IP "" 3
+pkgmake dummy 0.1.1 -g 'graphics' -speconly
+.PP
+This time you want to specify the "Requires:" on the command line, and only
+build the .deb package (no .rpm - e.g. since that would have different
+requirements):
+.IP "" 3
+pkgmake dummy 0.1.1 -req 'httpd phpapi' -norpm
+.PP
+Now we want to read the description (the long one) from a file, and build a
+package for the i386 architecture:
+.IP "" 3
+pkgmake dummy 0.1.1 -descfile ${BUILDDEB}/SPEC/dummy.desc -b i386
+.PP
+Of course, almost all combinations of command line parameters can be used. Some
+combinations do not make sense - and in those cases the results may be weired:
+You should still use your brains when combining them :) So however, here comes
+a long variant for you to think over:
+.IP "" 3
+pkgmake dummy 0.1.1 -req 'httpd phpapi' -notar -conf '/etc/dummy.conf' -deb -norpm -debopt "\\-\\-define\\ \\'REDHAT\\ 0\\'" -nonukecvs -r johnny4 -q
+.PP
+To compare your results, here comes what it means: Create the Debian (-deb)
+package dummy_0.1.1-johnny4.deb which depends on the packages httpd and phpapi.
+Do not create a tarball from the sources (we already have dummy-0.1.1.tar.gz in
+the SOURCES/ directory). Mark the file /etc/dummy.conf a configuration file (so
+the user installing this package gets asked whether to overwrite an existing
+file). Do not remove any CVS/* or .svn/* files (-nonukecvs) that may exist in
+the source (tarball). Pass the command line option "--define 'REDHAT 0'" to
+debbuild, and suppress any messages debbuild sends to STDOUT (-q) - we only want
+to see eventual errors. Do not make a RPM package (-norpm). Ough.
+
 .SH "CONFIGURATION"
 Configuration can be done in either ~/.pkgmakerc, /etc/pkgmake.conf or the
 head of the pkgmake executable - which is also the order of preference: pkgmake
