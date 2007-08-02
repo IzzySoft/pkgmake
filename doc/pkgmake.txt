@@ -79,19 +79,19 @@ and the DEB package with the same SPEC file and configuration.
 Unpack the tarball (you probably already did so when you're reading this).
 Check the path specifications at the top of the Makefile (they should be fine
 for Ubuntu and most likely other Debian derivates), and finally simply run
-"sudo make install".
+"sudo make install" (see doc/install.txt for more details on this way of
+[un]installation).
 
-Alternatively, put the pkgmake executable somewhere in your path, and the
-example.tpl to your SPEC directory - and edit the settings at the top of the
-pkgmake file to reflect your configuration. Put the pkgmake.conf in the /etc
-dir - or copy it to your home directory and rename it to .pkgmakerc
+Alternatively, put the pkgmake executable somewhere in your path, the *.tpl
+files to your SPEC directory. Then "sudo mkdir /etc/pkgmake", and copy the
+files "pkgmake.conf" and "version" there.
 
-Configuration can be done in either ~/.pkgmakerc, /etc/pkgmake.conf or the
-head of the pkgmake executable - which is also the order of preference: pkgmake
-first takes the configuration inside the script itself, and then looks for
-~/.pkgmakerc - if found, this is used. If it is not found, it looks for the
-/etc/pkgmake.conf and uses this file (if found) to overwrite the default
-settings.
+Finally edit the settings in the /etc/pkgmake.conf file (or optionally, copy
+it to ~/.pkgmake/ and edit that copy) to reflect your configuration. Pkgmake
+first checks for the configuration in your homedir, and uses this if found.
+Otherwise it loads the configuration from /etc/pkgmake/pkgmake.conf - if
+this is also not found, no special configuration will be used, but the
+hard-coded defaults.
 
 ===============================================================================
 

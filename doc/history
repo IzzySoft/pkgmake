@@ -10,8 +10,11 @@ v0.1.4
   __GROUP__ variable by the given Debian section instead of the RPM group.
   By default, this .dspec file will be deleted after processing.
 + some documentation updates: "man pkgmake" now also lists some examples,
-  and the doc/pkgmake.txt file finally has "additional information"
+  the doc/pkgmake.txt file finally has "additional information", and one
+  more file (doc/install.txt) has been added to explain the installation
+  using the make utility.
 * configuration files are now in /etc/pkgmake/ resp. ~/.pkgmake
++ added changelog sorting (important for rpmbuild)
 
 v0.1.3 (27.07.2007)
 -------------------
