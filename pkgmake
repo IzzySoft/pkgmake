@@ -53,6 +53,7 @@ MKSRPM=0				# Make RPM source package (*.src.rpm)?
 DEBOPTS=""
 #RPMOPTS=\-\-define\ \'REDHAT 1\'           # Options for rpmbuild
 RMDSPEC=1                               # Remove .dspec after processing
+CHANGELOGSORT=1                          # Shall we care for the changelogs order?
 
 # Don't change anything below this line except you know what you're doing
 BINDIR=${0%/*}				# where this script resides
@@ -68,6 +69,7 @@ blue='\e[0;34m'
 blink='\E[5m'
 NC='\e[0m'              # No Color
 
+#================================================[ little helper functions ]===
 #-----------------------------------------------------------[ Display help ]---
 function help {
   SCRIPT=${0##*/}
@@ -198,6 +200,73 @@ function walkdir {
   fi
 }
 
+#========================================[ Sort the ChangeLog by date desc ]===
+# $1 is the changelog input file. (Sorted) output will be appended to $2
+function changelog_sort {
+  local infile=$1
+  local outfile=$2
+  # Internal Field Separator by default is " " (space), which would truncate
+  # trailing spaces
+  IFS_ORI=$IFS
+  IFS="§"
+  # switch off file name expansion - changelog uses "*" at line start!
+  set -f
+
+# ----------------------------------------------------------[ Setup months ]---
+  Jan="01"; Feb="02"; Mar="03"; Apr="04"; May="05"; Jun="06";
+  Jul="07"; Aug="08"; Sep="09"; Oct="10"; Nov="11"; Dec="12";
+
+#---------------------------------------[ Read the original changelog file ]---
+  # $change[0..n] = "YYYYMMDD"
+  # $changename[YYYYMMDD] = "* Thu Jul 26 2007 John Doe <john@doe.com>"
+  # $change_YYYYMMDD[0..n] = <list of changes>
+  typeset -i num=0; typeset -i i=0;
+  while read line
+  do
+    if [ "${line:0:1}" = "*" ]; then
+      eval mon=\$${line:6:3}
+      ts="${line:13:4}${mon}${line:10:2}"
+      change[$num]=$ts
+      changename[$ts]=$line
+      cur=$num
+      let num=$num+1; let i=0
+    else
+      eval varname=change_\${ts}
+      eval $varname[$i]="\$line"
+      let i=$i+1
+    fi
+  done <$infile
+
+#----------------------------------------------------[ sort the date array ]---
+  for var in ${change[*]}; do x="$x\n`echo $var`"; done
+  y=`echo -e $x|sort -r|tr "\n" " "`
+  IFS=" "; set $y; IFS="§"; let num=0
+  while [ -n "$1" ]; do
+    change[$num]=$1
+    let num=$num+1
+    shift
+  done
+
+#----------------------------------------[ Write the sorted changelog file ]---
+  for ts in ${change[*]}; do
+    eval line=\${changename[\$ts]}
+    echo $line >>$outfile
+    eval varname=change_\${ts}
+    eval count=\${#$varname[*]}
+    typeset -i run=0
+    while [ $run -lt $count ]; do
+      eval line=\${$varname[$run]}
+      echo $line >>$outfile
+      let run=$run+1
+    done
+  done
+
+#----------------------------------------------------[ restore environment ]---
+  set +f
+  IFS=$IFS_ORI
+}
+
+
 #=============================================================[ Do the job ]===
 #----------------------------------------------[ Read config file (if any) ]---
 if [ -f ~/.pkgmake/pkgmake.conf ]; then
@@ -215,7 +284,7 @@ while [ "$1" != "" ] ; do
   case "$1" in
     -a) shift; VENDOR=$1;;
     -b) shift; BUILDARCH=$1;;
-    -c) shift; CHANGELOG=$1;;
+    -c) shift; CHANGELOG=$1; [ "${CHANGELOG:0:1}" != "/" ] && CHANGELOG="`pwd`/$CHANGELOG";;
     -conf) shift; CONF=$1;;
     -d) shift; SRCDIR=$1;;
     -deb) MKDEB=1;;
@@ -224,6 +293,7 @@ while [ "$1" != "" ] ; do
     -g) shift; GROUP=$1;;
     -l) shift; LICENSE=$1;;
     -keepdspec) RMDSPEC=0;;
+    -nochangelogsort) CHANGELOGSORT=0;;
     -nodeb) MKDEB=0;;
     -nonukecvs) NUKECVS=0;;
     -norpm) MKRPM=0;;
@@ -374,7 +444,11 @@ fi
 echo "* `LANG=en_EN date +"%a %b %d %Y"` ${PACKAGER}"> $TMPFILE
 echo "- packaged ${PROG}_${VERSION}-${RELEASE} ${PKGMAKE_USED}" >>$TMPFILE
 [ -n "${CHANGELOG}" ] && [ -f "${CHANGELOG}" ] && cat ${CHANGELOG} >> $TMPFILE
-cat $TMPFILE >> $SPECFILE
+if [ $CHANGELOGSORT -gt 0 ]; then
+  changelog_sort $TMPFILE $SPECFILE
+else
+  cat $TMPFILE >> $SPECFILE
+fi
 [ -n "$SECTION" ] && {
   cat $TMPFILE >>$DSPECFILE
 }
@@ -412,6 +486,6 @@ if [ $MKSRPM -eq 0 ]; then RPMPARM="-bb"; else RPMPARM="-ba"; fi
     *)   $RPMBUILD $RPMOPTS $RPMPARM $SPECFILE ;;
   esac
 }
-[ $RMDSPEC -gt 0 ] && [ -f $DSPECFILE ] && rm -f $DSPECFILE
+[ $RMDSPEC -gt 0 ] && [ "$SPECFILE" != "$DSPECFILE" ] && [ -f $DSPECFILE ] && rm -f $DSPECFILE
 
 finito

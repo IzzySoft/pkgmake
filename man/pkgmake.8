@@ -18,6 +18,7 @@ pkgmake - create RPM spec files and build *.rpm/*.deb packages
 .RB [ "-g \fIgroup\fR" ]
 .RB [ "-l \fIlicense\fR" ]
 .RB [ "-keepdspec" ]
+.RB [ "-nochangelogsort" ]
 .RB [ "-nosdeb" ]
 .RB [ "-nosrpm" ]
 .RB [ "-notar" ]
@@ -111,6 +112,11 @@ Don't remove the .dspec file after processing (see \fB-section\fR below for deta
 
 .IP "\fB-nodeb\fR"
 Don't make *.deb (even if config says MKDEB=1)
+
+.IP "\fB-nochangelogsort\fR"
+By default, pkgmake takes care that the changelog has its entries in the right
+order. However, if you have problems with this, you can temporarily switch off
+changelog sorting with this switch.
 
 .IP "\fB-nonukecvs\fR"
 Don't nuke the CVS/* and .svn/* files from the source (copy). Not very useful -

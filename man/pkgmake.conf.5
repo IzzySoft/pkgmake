@@ -120,6 +120,11 @@ which then would go to the %else condition). See \fBDEBOPTS\fR above.
 Shall we remove the .dspec file (if created) after processing (1) or not (0)?
 See \fBSECTION\fR above for details on the .dspec file.
 
+.IP "\fBCHANGELOGSORT\fR" 10
+Whether pkgmake should take care that the changelog has its entries in the
+right order (1) or not (0). The order is important for rpmbuild (which will
+break otherwise). However, debbuild doesn't care (yet?).
+
 .SH "SEE ALSO" 
 .PP 
 pkgmake(8)
