@@ -3,7 +3,7 @@ $Id$
 History for pkgmake
 ===================
 
-v0.1.4
+v0.1.4 (03.08.2007)
 -------------------
 + the new -section cmd line switch (or SECTION config keyword) now causes
   pkgmake to create a separate .dspec file for debbuild, replacing the
