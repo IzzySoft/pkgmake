@@ -269,11 +269,8 @@ function changelog_sort {
 
 #=============================================================[ Do the job ]===
 #----------------------------------------------[ Read config file (if any) ]---
-if [ -f ~/.pkgmake/pkgmake.conf ]; then
-  . ~/.pkgmake/pkgmake.conf
-elif [ -f /etc/pkgmake/pkgmake.conf ]; then
-  . /etc/pkgmake/pkgmake.conf
-fi
+[ -f /etc/pkgmake/pkgmake.conf ] && . /etc/pkgmake/pkgmake.conf
+[ -f ~/.pkgmake/pkgmake.conf ] && . ~/.pkgmake/pkgmake.conf
 
 #-------------------------------------------[ process command line options ]---
 typeset -i SILENT=0

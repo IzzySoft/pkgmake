@@ -281,12 +281,16 @@ debbuild, and suppress any messages debbuild sends to STDOUT (-q) - we only want
 to see eventual errors. Do not make a RPM package (-norpm). Ough.
 
 .SH "CONFIGURATION"
-Configuration can be done in either ~/.pkgmake/pkgmake.conf,
-/etc/pkgmake/pkgmake.conf or the head of the pkgmake executable - which is also
-the order of preference: pkgmake first takes the configuration inside the script
-itself, and then looks for ~/.pkgmake/pkgmake,conf - if found, this is used. If
-it is not found, it looks for the /etc/pkgmake/pkgmake.conf and uses this file
-(if found) to overwrite the default settings.
+Configuration can be done in ~/.pkgmake/pkgmake.conf and/or
+/etc/pkgmake/pkgmake.conf - which is also the order of preference: pkgmake
+first takes presets (hardcoded configuration inside the script itself), and
+then looks for /etc/pkgmake/pkgmake,conf - if found, presets are overwritten
+with the values defined here. Then it looks for the ~/.pkgmake/pkgmake.conf and
+uses the values of this file (if found) to overwrite the default settings. This
+means, you only need to define values different from the defaults in the system
+wide config (/etc/pkgmake/pkgmake.conf) to use for all users of the system, and
+each user then also only needs to re-define values different from the system
+wide ones in his private configuration.
 
 .SH "FILES"
 /usr/bin/pkgmake

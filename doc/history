@@ -6,6 +6,11 @@ History for pkgmake
 v0.1.5
 -------------------
 ! Tar forgot about hidden files - fixed
+* configuration is now read "serialized": hard-coded setting inside the script
+  are overwritten by definitions in the system wide configuration
+  (etc/pkgmake/pkgmake.conf), which are then overwritten by the values of
+  the personal config (~/.pkgmake/pkgmake.conf). This way you only need to
+  re-define differences, and not setup everything again.
 
 v0.1.4 (03.08.2007)
 -------------------
