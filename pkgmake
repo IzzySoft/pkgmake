@@ -461,7 +461,7 @@ rm -f $TMPFILE
 if [ $MKTAR -gt 0 ]; then
   say "${blue}* Creating tarball$NC"
   cd "${BUILDDEB}/BUILD/"
-  tar czf ${BUILDDEB}/SOURCES/${PROG}-${VERSION}.tar.gz ${PROG}-${VERSION}/*
+  tar czf ${BUILDDEB}/SOURCES/${PROG}-${VERSION}.tar.gz ${PROG}-${VERSION}
 fi
 
 #---------------------------------------------------[ building the package ]---

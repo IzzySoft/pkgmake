@@ -3,6 +3,10 @@ $Id$
 History for pkgmake
 ===================
 
+v0.1.5
+-------------------
+! Tar forgot about hidden files - fixed
+
 v0.1.4 (03.08.2007)
 -------------------
 + the new -section cmd line switch (or SECTION config keyword) now causes
