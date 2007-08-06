@@ -86,12 +86,11 @@ Alternatively, put the pkgmake executable somewhere in your path, the *.tpl
 files to your SPEC directory. Then "sudo mkdir /etc/pkgmake", and copy the
 files "pkgmake.conf" and "version" there.
 
-Finally edit the settings in the /etc/pkgmake.conf file (or optionally, copy
-it to ~/.pkgmake/ and edit that copy) to reflect your configuration. Pkgmake
-first checks for the configuration in your homedir, and uses this if found.
-Otherwise it loads the configuration from /etc/pkgmake/pkgmake.conf - if
-this is also not found, no special configuration will be used, but the
-hard-coded defaults.
+Finally edit the settings in the /etc/pkgmake/pkgmake.conf file (or optionally,
+copy it to ~/.pkgmake/ and edit that copy) to reflect your configuration.
+Pkgmake reads the configuration in the order internal - /etc/pkgmake/ -
+./.pkgmake/ - each time overwriting the old settings with the new definitions
+(if any).
 
 ===============================================================================
 

@@ -11,6 +11,7 @@ v0.1.5
   (etc/pkgmake/pkgmake.conf), which are then overwritten by the values of
   the personal config (~/.pkgmake/pkgmake.conf). This way you only need to
   re-define differences, and not setup everything again.
++ updated docs a little bit
 
 v0.1.4 (03.08.2007)
 -------------------
