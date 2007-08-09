@@ -21,6 +21,7 @@ Available options:
 .RB [ "-g \fIgroup\fR" ]
 .RB [ "-l \fIlicense\fR" ]
 .RB [ "-keepdspec" ]
+.RB [ "-keepspec" ]
 .RB [ "-nochangelogsort" ]
 .RB [ "-nosdeb" ]
 .RB [ "-nosrpm" ]
@@ -112,6 +113,9 @@ License of the software. Should be GPL :)
 
 .IP "\fB-keepdspec\fR"
 Don't remove the .dspec file after processing (see \fB-section\fR below for details)
+
+.IP "\fB-keepspec\fR"
+Don't remove the .spec file after processing
 
 .IP "\fB-nodeb\fR"
 Don't make *.deb (even if config says MKDEB=1)

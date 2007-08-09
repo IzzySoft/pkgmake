@@ -49,11 +49,10 @@ MKDEB=1					# Make Debian package (*.deb)?
 MKRPM=0					# Make RPM package (*.rpm)?
 MKSDEB=0				# Make Debian source package (*.sdeb)?
 MKSRPM=0				# Make RPM source package (*.src.rpm)?
-#DEBOPTS="--define 'REDHAT 0'"           # Options for debbuild
 DEBOPTS=""
-#RPMOPTS="--define 'REDHAT 1'"           # Options for rpmbuild
 RMDSPEC=1                               # Remove .dspec after processing
-CHANGELOGSORT=1                          # Shall we care for the changelogs order?
+RMSPEC=1                                # Remove .spec after processing
+CHANGELOGSORT=1                         # Shall we care for the changelogs order?
 
 # Don't change anything below this line except you know what you're doing
 BINDIR=${0%/*}				# where this script resides
@@ -290,6 +289,7 @@ while [ "$1" != "" ] ; do
     -g) shift; GROUP=$1;;
     -l) shift; LICENSE=$1;;
     -keepdspec) RMDSPEC=0;;
+    -keepspec) RMSPEC=0;;
     -nochangelogsort) CHANGELOGSORT=0;;
     -nodeb) MKDEB=0;;
     -nonukecvs) NUKECVS=0;;
@@ -482,6 +482,7 @@ if [ $MKSRPM -eq 0 ]; then RPMPARM="-bb"; else RPMPARM="-ba"; fi
     *)   eval "$RPMBUILD $RPMOPTS $RPMPARM $SPECFILE" ;;
   esac
 }
+[ $RMSPEC -gt 0 ] && rm -f $SPECFILE
 if [ $RMDSPEC -gt 0 ]; then
   if [ "$SPECFILE" != "$DSPECFILE" ]; then
     if [ -f "$DSPECFILE" ]; then

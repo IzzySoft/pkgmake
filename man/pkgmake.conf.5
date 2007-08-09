@@ -120,6 +120,12 @@ which then would go to the %else condition). See \fBDEBOPTS\fR above.
 Shall we remove the .dspec file (if created) after processing (1) or not (0)?
 See \fBSECTION\fR above for details on the .dspec file.
 
+.IP "\fBRMSPEC\fR" 10
+Shall we remove the .spec file after processing (1) or not (0)? After the
+processing you normally don't need it any longer, since a) you can recreate it
+any time from the template, and b) it is stored in the .src.rpm (if you create
+one).
+
 .IP "\fBCHANGELOGSORT\fR" 10
 Whether pkgmake should take care that the changelog has its entries in the
 right order (1) or not (0). The order is important for rpmbuild (which will
