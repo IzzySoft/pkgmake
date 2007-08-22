@@ -23,6 +23,7 @@ SPECDIR=$(RPMROOT)/SPECS
 install: installdirs
 	$(INSTALL_DATA) -c pkgmake.conf $(DESTDIR)$(sysconfdir)
 	$(INSTALL_DATA) -c version $(DESTDIR)$(sysconfdir)
+	$(INSTALL_DATA) -c autosect $(DESTDIR)$(sysconfdir)
 	$(INSTALL) -c pkgmake $(DESTDIR)$(bindir)
 	$(INSTALL_DATA) -c doc/* $(DESTDIR)$(docdir)
 	gzip man/*

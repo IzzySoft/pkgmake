@@ -53,6 +53,7 @@ DEBOPTS=""
 RMDSPEC=1                               # Remove .dspec after processing
 RMSPEC=1                                # Remove .spec after processing
 CHANGELOGSORT=1                         # Shall we care for the changelogs order?
+AUTOSECT=0				# Automatically derive Debian section
 
 # Don't change anything below this line except you know what you're doing
 BINDIR=${0%/*}				# where this script resides
@@ -88,6 +89,7 @@ function help {
   echo "     <Version>                  Version of this release"
   echo "  Options (overwrite defaults):"
   echo "     -a <author/vendor>         Vendor for this package (default: ${VENDOR})"
+  echo "     -autosect			Automatically derive Debian section from RPM group"
   echo "     -b <build architecture>    Target architecture (default: ${BUILDARCH})"
   echo "     -c <changelog file>        Filename of changelog file"
   echo "     -conf <conffiles>          Space separated list of files to thread as %config"
@@ -279,6 +281,7 @@ VERSION=$2
 while [ "$1" != "" ] ; do
   case "$1" in
     -a) shift; VENDOR=$1;;
+    -autosect) AUTOSECT=1;;
     -b) shift; BUILDARCH=$1;;
     -c) shift; CHANGELOG=$1; [ "${CHANGELOG:0:1}" != "/" ] && CHANGELOG="`pwd`/$CHANGELOG";;
     -conf) shift; CONF=$1;;
@@ -427,6 +430,16 @@ else
 fi
 mv $SPECFILE $TMPFILE
 # Debian section?
+[ $AUTOSECT -gt 0 ] && {
+  if [ -f ~/.pkgmake/autosect ]; then
+    $asect=~/.pkgmake/autosect
+  elif [ -f /etc/pkgmake/autosect ]; then
+    $asect=/etc/pkgmake/autosect
+  fi
+  [ -n "$asect" ] && {
+    $SECTION=`cat $asect|grep $GROUP|awk -F: '{print $2}'`
+  }
+}
 [ -n "$SECTION" ] && {
   cat $TMPFILE | sed "s/__GROUP__/${SECTION}/g" >$DSPECFILE
 }

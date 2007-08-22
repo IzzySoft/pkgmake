@@ -3,6 +3,12 @@ $Id$
 History for pkgmake
 ===================
 
+v0.1.6
+-------------------
++ adding the -autosect switch: Debian sections can now automatically be
+  derived from RPM groups, using a plain text mapping file you can edit to
+  match your wishes
+
 v0.1.5 (10.08.2007)
 -------------------
 ! Tar forgot about hidden files - fixed

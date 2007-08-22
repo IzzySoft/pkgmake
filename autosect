@@ -1,0 +1,29 @@
+Amusements/Games:games
+Amusements/Graphics:graphics
+Applications/Archiving:utils
+Applications/Communications:comm
+Applications/Databases:misc
+Applications/Editors:editors
+Applications/Emulators:misc
+Applications/Engineering:misc
+Applications/File:misc
+Applications/Internet:web
+Applications/Multimedia:misc
+Applications/Productivity:misc
+Applications/Publishing:misc
+Applications/System:utils
+Applications/Text:text
+Development/Debuggers:devel
+Development/Languages:devel
+Development/Libraries:libdevel
+Development/System:devel
+Development/Tools:devel
+Documentation:doc
+System Environment/Base:base
+System Environment/Daemons:misc
+System Environment/Kernel:base
+System Environment/Libraries:libs
+System Environment/Shells:shells
+User Interface/Desktops:x11
+User Interface/X:x11
+User Interface/X Hardware Support:x11

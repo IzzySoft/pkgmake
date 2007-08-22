@@ -1,4 +1,4 @@
-.TH pkgmake 8 "30 July 2007"
+.TH pkgmake 8 "22 August 2007"
 .IX pkgmake
 .SH NAME
 pkgmake - create RPM spec files and build *.rpm/*.deb packages
@@ -11,6 +11,7 @@ pkgmake - create RPM spec files and build *.rpm/*.deb packages
 
 Available options:
 .RB [ "-a \fIauthor\fR" ]
+.RB [ "-autosect" ]
 .RB [ "-b \fIbuild-architecture\fR" ]
 .RB [ "-c \fIchangelog-file\fR" ]
 .RB [ "-conf \fI'conf files'\fR" ]
@@ -70,6 +71,13 @@ Used to override the default author of the software you are going to package.
 The default author is configured inside the pkgmake shell script itself and
 may be modified there as well. The syntax to use is:
 \fBname <email@address>\fR
+
+.IP "\fB-autosect\fR"
+Automatically derive a valid Debian section from the given RPM group. This match
+is done via mappings defined either in ~/.pkgmake/autosect (if found) or
+/etc/pkgmake/autosect (otherwise), which is a plain ASCII file containing a
+list of all RPM groups followed by the Debian section to use instead, one pair
+per line. Both values are separated by a colon (":").
 
 .IP "\fB-b\fR"
 Target BuildArchitecture. Something like \fBi386\fR, \fBathlon\fR, or \fBnoarch\fR.
@@ -304,7 +312,13 @@ wide ones in his private configuration.
 
 /etc/pkgmake/pkgmake.conf
 
+/etc/pkgmake/autosect
+
+/etc/pkgmake/version
+
 ~/.pkgmake/pkgmake.conf
+
+~/.pkgmake/autosect
 
 /usr/src/rpm/SPEC/alldirs.tpl
 
