@@ -226,7 +226,7 @@ function changelog_sort {
   do
     if [ "${line:0:1}" = "*" ]; then
       eval mon=\$${line:6:3}
-      ts="${line:13:4}${mon}${line:10:2}"
+      ts="${line:13:4}${mon}${line:10:2}$num"
       change[$num]=$ts
       changename[$ts]=$line
       cur=$num
@@ -453,7 +453,10 @@ else
 fi
 echo "* `LANG=en_EN date +"%a %b %d %Y"` ${PACKAGER}"> $TMPFILE
 echo "- packaged ${PROG}_${VERSION}-${RELEASE} ${PKGMAKE_USED}" >>$TMPFILE
-[ -n "${CHANGELOG}" ] && [ -f "${CHANGELOG}" ] && cat ${CHANGELOG} >> $TMPFILE
+[ -n "${CHANGELOG}" ] && [ -f "${CHANGELOG}" ] && {
+  echo >>$TMPFILE
+  cat ${CHANGELOG} >> $TMPFILE
+}
 if [ $CHANGELOGSORT -gt 0 ]; then
   changelog_sort $TMPFILE $SPECFILE
 else
