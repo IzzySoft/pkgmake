@@ -3,7 +3,7 @@ $Id$
 History for pkgmake
 ===================
 
-v0.1.6
+v0.1.6 (10.10.2007)
 -------------------
 + adding the -autosect switch: Debian sections can now automatically be
   derived from RPM groups, using a plain text mapping file you can edit to
