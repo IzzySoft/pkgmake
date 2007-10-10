@@ -3,17 +3,25 @@ Name: __NAME__
 Version: __VERSION__
 Release: __RELEASE__
 License: __LICENSE__
-Group: universe/Development
+Group: __GROUP__
 Source: __NAME__-%{version}.tar.gz
 Vendor: Andreas Itzchak Rehberg <devel@izzysoft.de>
 URL: http://www.izzysoft.de/
 Packager: __PACKAGER__
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-root
-__REQUIRES__
+Requires: findutils
+Requires: sed
+Requires: tar
 __PROVIDES__
 #
 AutoReqProv:   no
+
+%if %{REDHAT}
+  %define RPMDIR /usr/src/redhat
+%else
+  %define RPMDIR /usr/src/rpm
+%endif
 
 %description
 pkgmake is just a simple shell script to create RPM *.spec files and per
@@ -36,14 +44,12 @@ and the DEB package with the same SPEC file and configuration.
 %build
 
 %install
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf $RPM_BUILD_ROOT
-mkdir -p "${RPM_BUILD_ROOT}/etc"
-mkdir -p "${RPM_BUILD_ROOT}/usr/bin"
-mkdir -p "${RPM_BUILD_ROOT}/usr/share/man/man5"
-mkdir -p "${RPM_BUILD_ROOT}/usr/share/man/man8"
-make DESTDIR="${RPM_BUILD_ROOT}" install
+make DESTDIR="${RPM_BUILD_ROOT}" prefix=/usr install
+%if %{REDHAT}
+  mv ${RPM_BUILD_ROOT}/usr/src/rpm ${RPM_BUILD_ROOT}%{RPMDIR}
+%endif
 rm -rf ${RPM_BUILD_ROOT}/usr/src/debian
-mv ${RPM_BUILD_ROOT}/usr/share/doc/pkgmake/* ${RPM_BUILD_ROOT}/usr/share/doc/
+#cp -pr ${RPM_BUILD_ROOT} /usr/src/debian/SPECS
 
 %pre
 
@@ -51,7 +57,11 @@ mv ${RPM_BUILD_ROOT}/usr/share/doc/pkgmake/* ${RPM_BUILD_ROOT}/usr/share/doc/
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -rf $RPM_BUILD_ROOT
 
 %post
-[ ! -h /usr/src/debian ] && [ ! -d /usr/src/debian ] && ln -s /usr/src/rpm /usr/src/debian
+%if %{REDHAT}
+  if [ ! -e /usr/src/debian ]; then ln -s %{RPMDIR} /usr/src/debian; fi
+%else
+  if [ ! -e /usr/src/debian ]; then ln -s /usr/src/rpm /usr/src/debian; fi
+%endif
 
 %preun
 
@@ -59,16 +69,21 @@ mv ${RPM_BUILD_ROOT}/usr/share/doc/pkgmake/* ${RPM_BUILD_ROOT}/usr/share/doc/
 
 %files
 %defattr(-,root,root)
-%doc pkgmake.txt
-%doc LICENSE
-%doc specfile.txt
-%doc history
-%config /etc/pkgmake.conf
+%doc /usr/share/doc/pkgmake
+%config /etc/pkgmake/pkgmake.conf
 %attr(755,root,root) /usr/bin/pkgmake
-/usr/share/man/man5/pkgmake.conf.5
-/usr/share/man/man5/pkgmake.tpl.5
-/usr/share/man/man8/pkgmake.8
+/etc/pkgmake/*
+/usr/share/man/man5/pkgmake.conf.5*
+/usr/share/man/man5/pkgmake.tpl.5*
+/usr/share/man/man8/pkgmake.8*
+%if %{REDHAT}
+%{RPMDIR}/SPECS/alldirs.tpl
+%{RPMDIR}/SPECS/make.tpl
+%{RPMDIR}/SPECS/pkgmake.tpl
+%else
 /usr/src/rpm/SPECS/alldirs.tpl
 /usr/src/rpm/SPECS/make.tpl
+/usr/src/rpm/SPECS/pkgmake.tpl
+%endif
 
 %changelog
