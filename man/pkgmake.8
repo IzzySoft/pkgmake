@@ -1,23 +1,23 @@
-.TH pkgmake 8 "22 August 2007"
+.TH pkgmake 8 "10 October 2007"
 .IX pkgmake
 .SH NAME
 pkgmake - create RPM spec files and build *.rpm/*.deb packages
 
 .SH SYNOPSIS
 .B pkgmake
-.RB < "\fIPackageName\fR" >
-.RB < "\fIVersion\fR" >
+.RB "\fIPackageName\fR"
+.RB "\fIVersion\fR"
 .RB [ "options" ]
 
 Available options:
 .RB [ "-a \fIauthor\fR" ]
-.RB [ "-autosect" ]
+.RB [ -autosect ]
 .RB [ "-b \fIbuild-architecture\fR" ]
 .RB [ "-c \fIchangelog-file\fR" ]
 .RB [ "-conf \fI'conf files'\fR" ]
 .RB [ "-d \fIdirectory-root\fR" ]
 .RB [ "-deb" ]
-.RB [ "-debopt '\fIoption\fR [ option ...]' " ]
+.RB [ "-debopt '\fIoption ...\fR' " ]
 .RB [ "-descfile \fIdescription-file\fR" ]
 .RB [ "-g \fIgroup\fR" ]
 .RB [ "-l \fIlicense\fR" ]
@@ -33,7 +33,7 @@ Available options:
 .RB [ "-r \fIrelease\fR" ]
 .RB [ "-req \fI'requires what'\fR" ]
 .RB [ "-rpm" ]
-.RB [ "-rpmopt '\fIoption\fR [ option ...]' " ]
+.RB [ "-rpmopt '\fIoption ...\fR' " ]
 .RB [ "-q" ]
 .RB [ "-Q" ]
 .RB [ "-s \fI'short summary'\fR" ]
@@ -70,7 +70,7 @@ The version of the release you are going to build.
 Used to override the default author of the software you are going to package.
 The default author is configured inside the pkgmake shell script itself and
 may be modified there as well. The syntax to use is:
-\fBname <email@address>\fR
+\fIname <email@address>\fR
 
 .IP "\fB-autosect\fR"
 Automatically derive a valid Debian section from the given RPM group. This match
@@ -173,7 +173,7 @@ Make *.rpm (even if config says MKRPM=0)
 
 .IP "\fB-rpmopt\fR"
 Option(s) to pass to rpmbuild. Enclose the options in quotes, e.g. \fB-rpmopt "--clean"\fR.
-See the \fBRPMOPTS\fR configuration option in \fIman pkgmake.conf\fR for more
+See the \fBRPMOPTS\fR configuration option in \fBman pkgmake.conf\fR for more
 details.
 
 .IP "\fB-q\fR"
@@ -306,6 +306,32 @@ means, you only need to define values different from the defaults in the system
 wide config (/etc/pkgmake/pkgmake.conf) to use for all users of the system, and
 each user then also only needs to re-define values different from the system
 wide ones in his private configuration.
+
+.SH MESSAGES AND EXIT CALLS
+When running in interactive mode, you usually are not interested in the exit
+codes of the program. All details will be displayed to you, so on errors it
+should be quite clear what's going on.
+
+This looks quite different when you decide to run this program automatically
+e.g. from other scripts - here you need to decide what action to take in case of
+an error occuring:
+
+.TP
+Code
+Description
+.TP
+0
+Everything was running fine, no errors occured. In interactive mode, this also
+applies on exits where the "continue?" question was answered with "No".
+.TP
+2
+The .spec file was not found
+.TP
+3
+The sources for the distribution have not been found
+.TP
+4
+The tar file could not be located
 
 .SH "FILES"
 /usr/bin/pkgmake

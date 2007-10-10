@@ -9,6 +9,8 @@ v0.1.6
   derived from RPM groups, using a plain text mapping file you can edit to
   match your wishes
 ! changelog sorting ate entries when the same date was used for more than one
+* made the exit codes more distinct
+* updated man pages
 
 v0.1.5 (10.08.2007)
 -------------------

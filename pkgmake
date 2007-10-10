@@ -167,13 +167,13 @@ function nospec {
 function nosrc {
   header
   echo -e "${red}Sources of $PROG v$VERSION (${SRCDIR}/*) not found, aborting.$NC"
-  exit 2
+  exit 3
 }
 
 function notar {
   header
   echo -e "${red}Tarball for $PROG v$VERSION (${BUILDDEB}/SOURCES/${PROG}-${VERSION}.tar.gz) not found, aborting.$NC"
-  exit 2
+  exit 4
 }
 
 function finito {
