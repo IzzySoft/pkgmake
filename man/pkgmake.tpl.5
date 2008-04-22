@@ -1,4 +1,4 @@
-.TH "PKGMAKE.TPL" "5" "30 July 2007"
+.TH "PKGMAKE.TPL" "5" "22 April 2008"
 .SH "NAME" 
 pkgmake.tpl \- Template files for \fBpkgmake\fR, which creates RPM spec
 files and builds *.rpm/*.deb packages
@@ -72,6 +72,7 @@ package provides. These will be split and each provides will be placed on a
 separate line, like
 
 Provides: provides1
+.br
 Provides: provides2
 
 If you did not pass the -prov parameter, the entire line will be removed.
@@ -90,7 +91,26 @@ AutoReqProv: no
 in your SPEC file (template). However, in some cases you may want to add to the
 automatic dependencies, or just handle them yourself completely - so you can use
 this replacement variable.
- 
+
+.IP "\fB__DEB_REQUIRES__\fP, \fB__RPM_REQUIRES__\fP" 10
+With this tags you can define requirements specific to the Debian resp. RPM
+packages. For example, if your package depends on PHP, but not on a specific
+version or installation (e.g. Apache module or CGI can be used), the corresponding
+lines in your Spec template could look like
+
+__DEB_REQUIRES__: libapache2-mod-php5 | libapache-mod-php5 | php5-cgi | php5 | libapache2-mod-php4 | libapache-mod-php4 | php4 | php4-cgi
+.br
+__RPM_REQUIRES__: php
+
+So the RPM would be build to simply require "php", while the Debian package
+would require one of the alternatives from the __DEB_REQUIRES__ list. You are
+still free to use the __REQUIRE__ tag (or the literal "Requires:") in your SPEC
+template to define requirements common to both systems.
+
+Only the term (__DEB_REQUIRES__ resp. __RPM_REQUIRES__) will be replaced by
+"Requires" for the corresponding SPEC file. The respectively other line will
+be removed, so the SPEC is kept syntactically correct.
+
 .IP "\fB__SUMMARY__\fP" 10
 A short summary for your package can (and should, if your template uses this
 variable) be passed to pkgmake using the -s command line switch. This should

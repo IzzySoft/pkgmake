@@ -440,11 +440,13 @@ mv $SPECFILE $TMPFILE
     $SECTION=`cat $asect|grep $GROUP|awk -F: '{print $2}'`
   }
 }
-[ -n "$SECTION" ] && {
-  cat $TMPFILE | sed "s/__GROUP__/${SECTION}/g" >$DSPECFILE
-}
+if [ -n "$SECTION" ]; then
+  cat $TMPFILE | sed "s/__GROUP__/${SECTION}/g" | sed "/__RPM_REQUIRES__/d" | sed "s/__DEB_REQUIRES__/Requires/g" >$DSPECFILE
+else
+  cat $TMPFILE | sed "/__RPM_REQUIRES__/d" | sed "s/__DEB_REQUIRES__/Requires/g" >$DSPECFILE
+fi
 # RPM group
-cat $TMPFILE | sed "s/__GROUP__/${GROUP}/g" >$SPECFILE
+cat $TMPFILE | sed "s/__GROUP__/${GROUP}/g" | sed "/__DEB_REQUIRES__/d" | sed "s/__RPM_REQUIRES__/Requires/g" >$SPECFILE
 # ChangeLog:
 if [ -n "$PKGMAKE_USED" ]; then
   PKGMAKE_USED="using pkgmake v${PKGMV} & ${PKGMAKE_USED}"
@@ -462,9 +464,7 @@ if [ $CHANGELOGSORT -gt 0 ]; then
 else
   cat $TMPFILE >> $SPECFILE
 fi
-[ -n "$SECTION" ] && {
-  cat $TMPFILE >>$DSPECFILE
-}
+cat $TMPFILE >>$DSPECFILE
 
 rm -f $TMPFILE
 
@@ -482,7 +482,6 @@ if [ $MKSDEB -eq 0 ]; then DEBPARM="-bb"; else DEBPARM="-ba"; fi
 if [ $MKSRPM -eq 0 ]; then RPMPARM="-bb"; else RPMPARM="-ba"; fi
 [ $MKDEB -gt 0 ] && {
   say "${blue}* Running ${DEBBUILD}$NC"
-  [ -z "$SECTION" ] && DSPECFILE=$SPECFILE
   case "$SILENT" in
     1)   eval "$DEBBUILD $DEBPARM $DEBOPTS $DSPECFILE >/dev/null" ;;
     2|3) eval "$DEBBUILD $DEBPARM $DEBOPTS $DSPECFILE &>/dev/null" ;;
