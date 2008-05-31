@@ -13,6 +13,8 @@ BuildRoot: %{_tmppath}/%{name}-root
 Requires: findutils
 Requires: sed
 Requires: tar
+Requires: debbuild
+__RECOMMENDS__ relman
 __PROVIDES__
 #
 AutoReqProv:   no

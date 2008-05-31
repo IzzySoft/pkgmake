@@ -1,4 +1,4 @@
-.TH "PKGMAKE.TPL" "5" "22 April 2008"
+.TH "PKGMAKE.TPL" "5" "01 June 2008"
 .SH "NAME" 
 pkgmake.tpl \- Template files for \fBpkgmake\fR, which creates RPM spec
 files and builds *.rpm/*.deb packages
@@ -110,6 +110,21 @@ template to define requirements common to both systems.
 Only the term (__DEB_REQUIRES__ resp. __RPM_REQUIRES__) will be replaced by
 "Requires" for the corresponding SPEC file. The respectively other line will
 be removed, so the SPEC is kept syntactically correct.
+
+.IP "\fB__RECOMMENDS__\fP, \fB__SUGGESTS__\fP and \fB__REPLACES__\fP" 10
+These are Debian specific tags - thus pkgmake will remove these lines for building
+the RPM package, and replace them accordingly (by "Recommends:", "Suggests:"
+and "Replaces:") for the Debian-specific SpecFile. An example would be the
+pkgmake SpecFile template with the line:
+
+__RECOMMENDS__ relman
+
+which would be replaced by
+
+Recommends: relman
+
+for the Debian-specific SpecFile, but completely removed for the RPM specific
+SpecFile.
 
 .IP "\fB__SUMMARY__\fP" 10
 A short summary for your package can (and should, if your template uses this
