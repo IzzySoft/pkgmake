@@ -10,11 +10,14 @@ URL: http://www.izzysoft.de/
 Packager: __PACKAGER__
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-root
+Requires: bash
 Requires: findutils
+Requires: awk
 Requires: sed
 Requires: tar
 Requires: debbuild
 __RECOMMENDS__ relman
+__SUGGESTS__ rpm
 __PROVIDES__
 #
 AutoReqProv:   no

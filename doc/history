@@ -9,6 +9,7 @@ v0.1.7
   specific to the given package format
 + adding the placeholders __RECOMMENDS__, __SUGGESTS__ and __REPLACES__ for
   the Debian-specific keywords (requires debbuild >= revision 129)
+* updated dependencies in SpecFile template
 
 v0.1.6 (10.10.2007)
 -------------------
