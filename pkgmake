@@ -442,10 +442,10 @@ mv $SPECFILE $TMPFILE
 }
 if [ -n "$SECTION" ]; then
   cat $TMPFILE | sed "s/__GROUP__/${SECTION}/g" | sed "/__RPM_REQUIRES__/d" | sed "s/__DEB_REQUIRES__/Requires/g" \
-  | sed "s/__RECOMMENDS__/Recommends:/g" | sed "s/__SUGGESTS__/Suggests:/g" | sed "s/__REPLACES__/Replaces/g" >$DSPECFILE
+  | sed "s/__RECOMMENDS__/Recommends/g" | sed "s/__SUGGESTS__/Suggests/g" | sed "s/__REPLACES__/Replaces/g" >$DSPECFILE
 else
   cat $TMPFILE | sed "/__RPM_REQUIRES__/d" | sed "s/__DEB_REQUIRES__/Requires/g" \
-  | sed "s/__RECOMMENDS__/Recommends:/g" | sed "s/__SUGGESTS__/Suggests:/g" | sed "s/__REPLACES__/Replaces/g" >$DSPECFILE
+  | sed "s/__RECOMMENDS__/Recommends/g" | sed "s/__SUGGESTS__/Suggests/g" | sed "s/__REPLACES__/Replaces/g" >$DSPECFILE
 fi
 # RPM group
 cat $TMPFILE | sed "s/__GROUP__/${GROUP}/g" | sed "/__DEB_REQUIRES__/d" | sed "s/__RPM_REQUIRES__/Requires/g" \

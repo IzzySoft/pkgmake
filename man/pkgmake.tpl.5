@@ -113,11 +113,11 @@ be removed, so the SPEC is kept syntactically correct.
 
 .IP "\fB__RECOMMENDS__\fP, \fB__SUGGESTS__\fP and \fB__REPLACES__\fP" 10
 These are Debian specific tags - thus pkgmake will remove these lines for building
-the RPM package, and replace them accordingly (by "Recommends:", "Suggests:"
-and "Replaces:") for the Debian-specific SpecFile. An example would be the
+the RPM package, and replace them accordingly (by "Recommends", "Suggests"
+and "Replaces") for the Debian-specific SpecFile. An example would be the
 pkgmake SpecFile template with the line:
 
-__RECOMMENDS__ relman
+__RECOMMENDS__: relman
 
 which would be replaced by
 
