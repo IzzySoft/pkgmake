@@ -3,7 +3,7 @@ $Id$
 History for pkgmake
 ===================
 
-v0.1.7
+v0.1.7 (01.06.2008)
 -------------------
 + adding the placeholders __DEB_REQUIRES__ and __RPM_REQUIRES__ for requirements
   specific to the given package format
