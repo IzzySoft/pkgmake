@@ -29,6 +29,28 @@ SRC_BASEURL=""
 SPECFILE=$1
 OUTFILE=$2
 
+#--------------------------------------------[ Package unsupported for us? ]---
+#excludeos
+EXCLOS=$(cat "$SPECFILE"|tr [:upper:] [:lower:]|sed -n '/^excludeos.*linux/p')
+[ -n "$EXCLOS" ] && {
+  echo "Sorry - but this package seems not to be supported for ArchLinux:"
+  echo "'$EXCLOS'"
+  exit 22
+}
+#exclusiveos
+EXCLUS=$(cat "$SPECFILE"|tr [:upper:] [:lower:]|sed -n '/^exclusiveos/p')
+[ -n "$EXCLUS" ] && {
+  EXCLUSLX=$(cat "$SPECFILE"|tr [:upper:] [:lower:]|sed -n '/^exclusiveos.*linux/p')
+  [ -z "$EXCLUSLX" ] && {
+    echo "Sorry - but this package seems not to be supported for ArchLinux:"
+    echo "'$EXCLUS'"
+    echo "'$EXCLUSLX'"
+    exit 22
+  }
+}
+#excludearch
+#exclusivearch
+
 #===========================================================[ Helper Funcs ]===
 #-------------------------------[ Remove leading and trailing white spaces ]---
 function trim() {
