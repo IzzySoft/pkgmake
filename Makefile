@@ -38,6 +38,7 @@ uninstall:
 	rm -rf $(DESTDIR)$(docdir)
 	rm -f $(DESTDIR)$(man5dir)/pkgmake.*
 	rm -f $(DESTDIR)$(man8dir)/pkgmake.*
+	rm -f $(DESTDIR)$(man8dir)/spec2arch.*
 
 installdirs:
 	# Generate all required target directories (due to DESTDIR, i.e. all)
