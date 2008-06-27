@@ -25,6 +25,7 @@ install: installdirs
 	$(INSTALL_DATA) -c version $(DESTDIR)$(sysconfdir)
 	$(INSTALL_DATA) -c autosect $(DESTDIR)$(sysconfdir)
 	$(INSTALL) -c pkgmake $(DESTDIR)$(bindir)
+	$(INSTALL) -c spec2arch $(DESTDIR)$(bindir)
 	$(INSTALL_DATA) -c doc/* $(DESTDIR)$(docdir)
 	gzip man/*
 	$(INSTALL_DATA) -c man/*.5* $(DESTDIR)$(man5dir)

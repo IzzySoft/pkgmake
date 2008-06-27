@@ -8,7 +8,7 @@
 # Syntax:
 #    spec2arch <specfile> <outfile>
 ###############################################################################
-# $Id: pkgmake 65 2008-06-01 16:30:04Z izzy $
+# $Id$
 
 #==========================================================[ Configuration ]===
 # This is what will be put in front of the "source" lines content:
