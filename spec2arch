@@ -12,7 +12,8 @@
 
 #==========================================================[ Configuration ]===
 # This is what will be put in front of the "source" lines content:
-SRC_BASEURL="http://projects.izzysoft.de/ftp/net/div/izzysoft/\$pkgname"
+#SRC_BASEURL="http://projects.izzysoft.de/ftp/net/div/izzysoft/\$pkgname"
+SRC_BASEURL=""
 
 #===========================================================[ Syntax Check ]===
 [ -z "$2" ] && {
