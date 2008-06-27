@@ -53,10 +53,22 @@ function output() {
   [ -n "$URL" ] && echo "url=\"$URL\""
   [ -n "$LICENSE" ] && echo "license=('$LICENSE')"
   echo "groups=('$GROUP')"
-  [ -n "$DEPENDS" ] && echo "depends=($(trim "$DEPENDS"))"
-  [ -n "$PROVIDES" ] && echo "provides=($(trim "$PROVIDES")"
-  [ -n "$CONFLICTS" ] && echo "conflicts=($(trim "$CONFLICTS"))"
-  [ -n "$REPLACES" ] && echo "replaces=($(trim "$REPLACES"))"
+  [ -n "$DEPENDS" ] && {
+    DEPENDS=$(echo "$DEPENDS"|sed 's/,/ /')
+    echo "depends=($(trim "$DEPENDS"))"
+  }
+  [ -n "$PROVIDES" ] && {
+    PROVIDES=$(echo "$PROVIDES"|sed 's/,/ /')
+    echo "provides=($(trim "$PROVIDES")"
+  }
+  [ -n "$CONFLICTS" ] && {
+    CONFLICTS=$(echo "$CONFLICTS"|sed 's/,/ /')
+    echo "conflicts=($(trim "$CONFLICTS"))"
+  }
+  [ -n "$REPLACES" ] && {
+    REPLACES=$(echo "$REPLACES"|sed 's/,/ /')
+    echo "replaces=($(trim "$REPLACES"))"
+  }
   [ -n "$BACKUP" ] && echo "backup=($(trim "$BACKUP"))"
   echo "source=($SRC_BASEURL/\$pkgname-\$pkgver.tar.gz)"
   echo
@@ -113,14 +125,14 @@ while read line; do
       "vendor") VENDOR="$VAL";;
       "packager") PACKAGER="$VAL";;
       "url") URL="$VAL";;
-      "buildarchitectures")
+      "buildarchitectures"|"buildarch")
         if [ "$VAL" = "noarch" ]; then
 	  ARCH="('any')"
 	else
 	  ARCH="('$VAL')"
        fi
 	;;
-      "requires") DEPENDS="${DEPENDS} '$VAL'";; # Should we have logic here to check for versioned requirements?
+      "requires"|"buildrequires") DEPENDS="${DEPENDS} '$VAL'";; # Should we have logic here to check for versioned requirements?
       "provides") PROVIDES="${PROVIDES} '$VAL'";;
       "conflicts") CONFLICTS="${CONFLICTS} '$VAL'";;
       "replaces") REPLACES="${REPLACES} '$VAL'";;
