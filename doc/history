@@ -3,6 +3,10 @@ $Id$
 History for pkgmake
 ===================
 
+0.1.8
+-------------------
++ added script to create a basic PKGBUILD file (for ArchLinux) from .spec
+
 v0.1.7 (01.06.2008)
 -------------------
 + adding the placeholders __DEB_REQUIRES__ and __RPM_REQUIRES__ for requirements
