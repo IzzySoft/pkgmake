@@ -35,6 +35,7 @@ uninstall:
 	rm -f $(DESTDIR)$(bindir)/pkgmake
 	rm -rf $(DESTDIR)$(docdir)
 	rm -f $(DESTDIR)$(man5dir)/pkgmake.*
+	rm -f $(DESTDIR)$(man5dir)/spec2arch.*
 	rm -f $(DESTDIR)$(man8dir)/pkgmake.*
 	rm -f $(DESTDIR)$(man8dir)/spec2arch.*
 

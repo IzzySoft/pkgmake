@@ -1,0 +1,48 @@
+.TH "SPEC2ARCH.CONF" "5" "28 June 2008"
+.SH "NAME" 
+spec2arch.conf.conf \- Configuration file for \fBspec2arch\fR, which creates
+ArchLinux PKGBUILD files from RPM spec files
+.SH "DESCRIPTION" 
+.PP 
+This manual page documents the options that can be set in the spec2arch.conf
+configuration file. For a description of what spec2arch does, see the
+spec2arch(8) manpage.
+
+.SH "SETTINGS" 
+.PP 
+The syntax of options is OPTION=value - Bash syntax, since it will be sourced
+by the pkgmake executable, which is written in Bash script.
+
+.PP
+The following settings are available in spec2arch.conf: 
+
+.IP "\fBSRC_BASEURL\fP" 10
+Here you can define a base URL where the source is available for download.
+The string from this setting will be put in front of the source file name
+defined in the RPM .spec file.
+
+.IP "\fBUSE_WARNING\fP" 10
+Since the automatic creation of the PKGBUILD file may result in invalid
+settings and thus need a review, spec2arch can add a warning hint to that
+fact. You should only ommit it if you are really sure the created PKGBUILD
+file will be 100% correct. Valid settings are: 0 (no warning) or 1 (default
+- place a warning).
+
+.IP "\fBOVERWRITE_TARGET\fP" 10
+What shall be done if the target PKGBUILD file specified on the command line
+does already exist - shall it be overwritten without a warning (1), or shall
+spec2arch better exit with a warning (0 - default)?
+
+.SH "SEE ALSO" 
+.PP 
+spec2arch(8)
+
+.SH "AUTHOR" 
+.PP 
+This manual page was written by Andreas Itzchak Rehberg (devel@izzysoft.de),
+the author of the program. Permission is granted to copy, distribute and/or
+modify this document under the terms of the GNU General Public License,
+Version 2.
+
+More information may be found on the authors website, http://www.izzysoft.de/
+ 
