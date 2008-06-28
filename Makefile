@@ -21,11 +21,9 @@ DEBLINK=$(DESTDIR)/usr/src/debian
 SPECDIR=$(RPMROOT)/SPECS
 
 install: installdirs
-	$(INSTALL_DATA) -c pkgmake.conf $(DESTDIR)$(sysconfdir)
-	$(INSTALL_DATA) -c version $(DESTDIR)$(sysconfdir)
-	$(INSTALL_DATA) -c autosect $(DESTDIR)$(sysconfdir)
-	$(INSTALL) -c pkgmake $(DESTDIR)$(bindir)
-	$(INSTALL) -c spec2arch $(DESTDIR)$(bindir)
+	$(INSTALL_DATA) -c pkgmake.conf spec2arch.conf $(DESTDIR)$(sysconfdir)
+	$(INSTALL_DATA) -c version autosect $(DESTDIR)$(sysconfdir)
+	$(INSTALL) -c pkgmake spec2arch $(DESTDIR)$(bindir)
 	$(INSTALL_DATA) -c doc/* $(DESTDIR)$(docdir)
 	gzip man/*
 	$(INSTALL_DATA) -c man/*.5* $(DESTDIR)$(man5dir)
