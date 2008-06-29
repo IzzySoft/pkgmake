@@ -1,4 +1,4 @@
-.TH spec2arch 8 "28 June 2008"
+.TH spec2arch 8 "29 June 2008"
 .IX spec2arch
 .SH NAME
 RPM SpecFile to ArchLinux PKGBUILD converter
@@ -7,6 +7,7 @@ RPM SpecFile to ArchLinux PKGBUILD converter
 .B spec2arch
 .RB "\fIRPMSpecFile\fR"
 .RB "\fIPKGBUILDFile\fR"
+.RB [ options ]
 
 .SH DESCRIPTION
 spec2arch does a raw "convert" from a given .spec file to an ArchLinux
@@ -29,8 +30,30 @@ placeholders instead of the real values...
 The output file to generate. It will most likely be named PKGBUILD, but this
 way you can provide the directory and name where to store it.
 
+.IP "\fB-w\fR"
+Do not put the warning in the PKGBUILD file (overwrites config setting
+\fIUSE_WARNING\fR)
+
+.IP "\fB+w\fR"
+Put the warning in the PKGBUILD file (overwrites config setting
+\fIUSE_WARNING\fR)
+
+.IP "\fB-o\fR"
+Don't overwrite target if exists (overwrites config setting
+\fIOVERWRITE_TARGET\fR)
+
+.IP "\fB+o\fR"
+Overwrite target if exists (overwrites config setting
+\fIOVERWRITE_TARGET\fR)
+
+.IP "\fB--baseurl <baseurl>\fR"
+Set SRC_BASEURL to <baseurl> (overwrites config setting
+\fISRC_BASEURL\fR)
+
 .SH "EXAMPLES"
 spec2arch sample.spec /usr/local/projects/sample/PKGBUILD
+
+spec2arch sample.spec /usr/local/projects/sample/PKGBUILD +o -w
 
 .SH "CONFIGURATION"
 Not that much to configure  - for now it's just one line at the top of the

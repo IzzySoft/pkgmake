@@ -20,24 +20,50 @@ OVERWRITE_TARGET=0
 #=========================================================[ Initialization ]===
 #-----------------------------------------------------------[ Syntax Check ]---
 function syntax() {
+  if [ -n "$1" ]; then
+    EL=$1
+  else
+    EL=0
+  fi
   echo
   echo "Syntax:"
-  echo "   spec2arch <specfile> <outfile>"
+  echo "   spec2arch <specfile> <outfile> [options]"
   echo
   echo "where <specfile> is the RPM .spec file to process, and <outfile> the"
-  echo "resulting PKGBUILD file."
+  echo "resulting PKGBUILD file. Available options:"
   echo
-  exit 5
+  echo "-w	do not put the warning in the PKGBUILD file"
+  echo "+w	put the warning in the PKGBUILD file"
+  echo "-o	don't overwrite target if exists"
+  echo "+o	overwrite target if exists"
+  echo "--baseurl <baseurl>	set SRC_BASEURL to <baseurl>"
+  echo
+  exit $EL
 }
-[ -z "$2" ] && syntax
 
 #------------------------------------------------------------[ Read Config ]---
 [ -e /etc/pkgmake/spec2arch.conf ] && . /etc/pkgmake/spec2arch.conf
 [ -e $HOME/.pkgmake/spec2arch.conf ] && . $HOME/.pkgmake/spec2arch.conf
 
 #-----------------------------------------------------[ parse command line ]---
+case "$1" in
+  -h|--help) syntax;;
+esac
+[ -z "$2" ] && syntax 5
 SPECFILE=$1
 OUTFILE=$2
+
+while [ "$1" != "" ] ; do
+  case "$1" in
+    -w) USE_WARNING=0;;
+    +w) USE_WARNING=1;;
+    -o) OVERWRITE_TARGET=0;;
+    +o) OVERWRITE_TARGET=1;;
+    --baseurl) shift; SRC_BASEURL="$1";;
+  esac
+  shift
+done
+
 [ ! -e $SPECFILE ] && {
   echo
   echo "Sorry, but the specified .spec file '$SPECFILE' does not exits."
@@ -115,7 +141,8 @@ function output() {
     echo "replaces=($(trim "$REPLACES"))"
   }
   [ -n "$BACKUP" ] && echo "backup=($(trim "$BACKUP"))"
-  echo "source=($SRC_BASEURL/\$pkgname-\$pkgver.tar.gz)"
+  [ -n "$SRC_BASEURL" -a "${SRC_BASEURL:${#SRC_BASEURL}-1}" != "/" ] && SRC_BASEURL="${SRC_BASEURL}/"
+  echo "source=($SRC_BASEURL\$pkgname-\$pkgver.tar.gz)"
   echo
   echo -e "build() {$BUILD"
   echo "}"
