@@ -33,6 +33,7 @@
 BUILDDEB="/usr/src/debian"       	# Where the packages are located
 DEBBUILD="debbuild"			# debbuild executable
 RPMBUILD="rpmbuild"			# rpmbuild executable
+SPEC2ARCH="spec2arch"			# spec2arch executable
 # Some defaults:
 VENDOR="root <root@`hostname`>" 	# Who wrote it
 VENDORURL=""		  		# Default vendor URL (Escape slashes!)
@@ -54,6 +55,7 @@ RMDSPEC=1                               # Remove .dspec after processing
 RMSPEC=1                                # Remove .spec after processing
 CHANGELOGSORT=1                         # Shall we care for the changelogs order?
 AUTOSECT=0				# Automatically derive Debian section
+PKGBUILD=0				# Create the PKGBUILD file and include it in tarball
 
 # Don't change anything below this line except you know what you're doing
 BINDIR=${0%/*}				# where this script resides
@@ -102,10 +104,12 @@ function help {
   echo "     -nodeb			Don't make *.deb even if MKDEB=1"
   echo "     -nonukecvs                 Don't cleanup CVS/* and .svn/* files from source"
   echo "     -norpm			Don't make *.rpm even if MKRPM=1"
+  echo "     -nopkgbuild		Don't create PKGBUILD file even if PKGBUILD=1"
   echo "     -nosdeb			Don't make Debian source package"
   echo "     -nosrpm			Don't make RPM source package"
   echo "     -notar                     Don't create the tarball (i.e. it's already there)"
   echo "     -p <packager>              Packager for this package (default: ${PACKAGER})"
+  echo "     -pkgbuild			Create the ArchLinux PKGBUILD file even if PKGBUILD=0"
   echo "     -prov <provides>           Space separated list of provides"
   echo "     -r <release>               Release of this version (default: ${RELEASE})"
   echo "     -req <requires>            Space separated list of required packages"
@@ -296,11 +300,13 @@ while [ "$1" != "" ] ; do
     -nochangelogsort) CHANGELOGSORT=0;;
     -nodeb) MKDEB=0;;
     -nonukecvs) NUKECVS=0;;
+    -nopkgbuild) PKGBUILD=0;;
     -norpm) MKRPM=0;;
     -nosdeb) MKSDEB=0;;
     -nosrpm) MKSRPM=0;;
     -notar) MKTAR=0;;
     -p) shift; PACKAGER=$1;;
+    -pkgbuild) PKGBUILD=1;;
     -prov) shift; PROV=$1;;
     -q) [ $SILENTc -lt 2 ] && let SILENTc=$SILENT+1;;
     -Q) QUIET=1;;
@@ -472,6 +478,12 @@ cat $TMPFILE >>$DSPECFILE
 rm -f $TMPFILE
 
 [ $SPECONLY -eq 1 ] && finito
+
+#---------------------------------------------------[ Create PKGBUILD file ]---
+if [ $PKGBUILD -gt 0 -a $MKTAR -gt 0 ]; then
+  say "${blue}* Generating PKGBUILD file$NC"
+  $SPEC2ARCH $SPECFILE ${BUILDDEB}/BUILD/${PROG}-${VERSION}/PKGBUILD
+fi
 
 #---------------------------------------------------------[ create tarball ]---
 if [ $MKTAR -gt 0 ]; then

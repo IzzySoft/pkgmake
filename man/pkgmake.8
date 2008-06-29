@@ -1,4 +1,4 @@
-.TH pkgmake 8 "10 October 2007"
+.TH pkgmake 8 "29 June 2008"
 .IX pkgmake
 .SH NAME
 pkgmake - create RPM spec files and build *.rpm/*.deb packages
@@ -24,11 +24,13 @@ Available options:
 .RB [ "-keepdspec" ]
 .RB [ "-keepspec" ]
 .RB [ "-nochangelogsort" ]
+.RB [ "-nopkgbuild" ]
 .RB [ "-nosdeb" ]
 .RB [ "-nosrpm" ]
 .RB [ "-notar" ]
 .RB [ "-nonukecvs" ]
 .RB [ "-p \fIpackager\fR" ]
+.RB [ "-pkgbuild" ]
 .RB [ "-prov \fI'provides what'\fR" ]
 .RB [ "-r \fIrelease\fR" ]
 .RB [ "-req \fI'requires what'\fR" ]
@@ -137,6 +139,10 @@ changelog sorting with this switch.
 Don't nuke the CVS/* and .svn/* files from the source (copy). Not very useful -
 but hey, you never know who wants to distribute the CVS/SVN information along!
 
+.IP "\fB-nopkgbuild\fR"
+Don't create the PKGBUILD file for ArchLinux - even if PKGBUILD is set to 1 in
+the configs
+
 .IP "\fB-norpm\fR"
 Don't make *.rpm (even if config says MKRPM=1)
 
@@ -156,6 +162,10 @@ Even if you specify a directory with -d, that will be ignored in this case.
 
 .IP "\fB-p\fR"
 The packager - you, if you build the package. Same rules as with \fB-a\fR
+
+.IP "\fB-pkgbuild\fR"
+Create the PKGBUILD file for ArchLinux and include it in the distribution
+tarball - even if the config says PKGBUILD=0
 
 .IP "\fB-prov\fR"
 What the package provides. This could be either the names of the main executables,

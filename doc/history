@@ -6,6 +6,8 @@ History for pkgmake
 0.1.8
 -------------------
 + added script to create a basic PKGBUILD file (for ArchLinux) from .spec
++ integrated spec2arch into the pkgmake process. This includes a few new
+  command line (and configuration file) parameters for pkgmake
 
 v0.1.7 (01.06.2008)
 -------------------

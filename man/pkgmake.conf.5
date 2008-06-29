@@ -1,4 +1,4 @@
-.TH "PKGMAKE.CONF" "5" "30 July 2007"
+.TH "PKGMAKE.CONF" "5" "29 June 2008"
 .SH "NAME" 
 pkgmake.conf \- Configuration file for \fBpkgmake\fR, which creates RPM spec
 files and builds *.rpm/*.deb packages
@@ -27,6 +27,10 @@ spaces in it.
 .IP "\fBDEBBUILD\fP" 10 
 Name of the debbuild executable, optionally with path. To build *.rpm files,
 this would be "rpmbuild".
+
+.IP "\fBSPEC2ARCH\fP" 10
+Name of the spec2arch executable, optionally with path. This is only needed
+if the PKGBUILD file (for ArchLinux packages) should be created.
 
 .IP "\fBVENDOR\fP" 10 
 This is usually the author of the software. Use the syntax "John Doe <john@doe.com>",
@@ -81,6 +85,11 @@ Whether a source tarball (<program>-<version>.tar.gz) shall be created in
 the SOURCES/ directory (MKTAR=1) or not (MKTAR=0). Use the -notar command
 line switch to override (if your configuration says "MKTAR=1" and you
 don't want this for this run). If specified, the -d switch will be ignored.
+
+.IP "\fBPKGBUILD\fP 10
+Whether to create the PKGBUILD file and include it in tarball (1) or not
+(0 - default). Won't do anything if you set \fIMKTAR=0\fR - since then we
+could not include it in the tarball ;)
 
 .IP "\fBNUKECVS\fP" 10
 Shall we remove all CVS/* and .svn/* directories/files from the copy of the
