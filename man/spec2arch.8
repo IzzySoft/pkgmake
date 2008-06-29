@@ -30,13 +30,13 @@ placeholders instead of the real values...
 The output file to generate. It will most likely be named PKGBUILD, but this
 way you can provide the directory and name where to store it.
 
-.IP "\fB-w\fR"
-Do not put the warning in the PKGBUILD file (overwrites config setting
-\fIUSE_WARNING\fR)
+.IP "\fB-b\fR"
+Don't apply corrections to the build() block. Overwrites the
+\fIDO_BUILD_REPLACE\fR configuration parameter.
 
-.IP "\fB+w\fR"
-Put the warning in the PKGBUILD file (overwrites config setting
-\fIUSE_WARNING\fR)
+.IP "\fB+b\fR"
+Apply corrections to the build() block. Overwrites the \fIDO_BUILD_REPLACE\fR
+configuration parameter.
 
 .IP "\fB-o\fR"
 Don't overwrite target if exists (overwrites config setting
@@ -45,6 +45,14 @@ Don't overwrite target if exists (overwrites config setting
 .IP "\fB+o\fR"
 Overwrite target if exists (overwrites config setting
 \fIOVERWRITE_TARGET\fR)
+
+.IP "\fB-w\fR"
+Do not put the warning in the PKGBUILD file (overwrites config setting
+\fIUSE_WARNING\fR)
+
+.IP "\fB+w\fR"
+Put the warning in the PKGBUILD file (overwrites config setting
+\fIUSE_WARNING\fR)
 
 .IP "\fB--baseurl <baseurl>\fR"
 Set SRC_BASEURL to <baseurl> (overwrites config setting
