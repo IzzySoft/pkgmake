@@ -16,11 +16,7 @@
 SRC_BASEURL=""
 USE_WARNING=1
 OVERWRITE_TARGET=0
-BUILD_REPLACE[0]="%if %{REDHAT}"
-BUILD_REPLACED[0]="if \[ 1 -eq 1 \]"
-BUILD_REPLACE[1]="RPM_BUILD_ROOT"
-BUILD_REPLACED[1]="pkgdir"
-DO_BUILD_REPLACE=1
+DO_BUILD_REPLACE=0
 
 #=========================================================[ Initialization ]===
 #-----------------------------------------------------------[ Syntax Check ]---

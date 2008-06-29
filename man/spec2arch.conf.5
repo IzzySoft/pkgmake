@@ -41,10 +41,11 @@ Since the replace is done using "sed", all statements need to comply to regexp
 
 For the replace, we set up two arrays which need to correspond to each other:
 BUILD_REPLACE holds the strings to be replaced, BUILD_REPLACED the replacement.
+There are no defaults.
 
 .IP "\fBDO_BUILD_REPLACE\fR"
 Whether we should apply the changes defined by \fIBUILD_REPLACE\fR and
-\fIBUILD_REPLACED\fR (1, default) or not (0).
+\fIBUILD_REPLACED\fR (1) or not (0 - default).
 
 .SH "SEE ALSO" 
 .PP 
