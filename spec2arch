@@ -163,7 +163,11 @@ while read line; do
     if [ "${line:0:1}" == "%" ]; then
       VAR=$(echo $line|awk '{print $1}'|tr [:upper:] [:lower:])
       case "$VAR" in
-        "%prep"|"%setup"|"%build"|"%install"|"%pre"|"%clean"|"%post") continue;;
+        "%prep"|"%setup"|"%build"|"%install"|"%pre"|"%post") continue;;
+	"%if"|"%else"|"%endif")
+	  VAL=$(echo $line|sed 's/%if/if/g;s/%else/else/g;s/%endif/fi/g;s/%/\$/g');
+          BUILD="${BUILD}\n  $VAL"
+	  continue;;
 	*) BUILDBLOCK=0; continue;;
       esac
     else
@@ -176,7 +180,7 @@ while read line; do
   if [ "${line:0:1}" == "%" ]; then
     VAR=$(echo $line|awk '{print $1}'|tr [:upper:] [:lower:])
     case "$VAR" in
-      "%prep"|"%setup"|"%build"|"%install"|"%pre"|"%clean"|"%post") BUILDBLOCK=1; continue;;
+      "%prep"|"%setup"|"%build"|"%install"|"%pre"|"%post") BUILDBLOCK=1; continue;;
       *) continue;;
     esac
   fi
