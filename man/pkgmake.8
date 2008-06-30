@@ -39,6 +39,7 @@ Available options:
 .RB [ "-q" ]
 .RB [ "-Q" ]
 .RB [ "-s \fI'short summary'\fR" ]
+.RB [ -s2aparms \fI'parameters'\fR ]
 .RB [ "-sdeb" ]
 .RB [ "-section \fI'section'\fR" ]
 .RB [ "-speconly" ]
@@ -199,6 +200,11 @@ to the sub-processes - see \fB-q\fR for them).
 .IP "\fB-s\fR"
 Give a short summary what your package is about. Enclose in quotes, escape all
 forward slashes with backslashes again.
+
+.IP "\fB-s2aparms\fR"
+Optional parameters to pass to spec2arch (if you enabled creating the ArchLinux
+PKGBUILD file). See the spec2arch man page for a list of options available.
+Enclose the options in quotes, e.g. \fB-s2aparms "+o +e"\fR.
 
 .IP "\fB-sdeb\fR"
 Create Debian source package. See \fB-nosdeb\fR above for details.

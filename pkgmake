@@ -63,6 +63,7 @@ PREFIX="/"				# absolute path needed for *.deb
 TMPFILE="/tmp/flist.$$"			# we need some tempfile
 QUIET=0                                 # Shall we shutup ourself?
 PKGMV=0.0.0                             # Version of this script (kept in /etc/pkgmake/version)
+S2APARMS=""				# Optional parameters to spec2arch
 [ -f /etc/pkgmake/version ] && . /etc/pkgmake/version
 
 #-----------------------------------------------------------------[ Colors ]---
@@ -117,6 +118,7 @@ function help {
   echo "     -q	                        Be Quiet (subprocesses)"
   echo "     -Q	                        Be Quiet (ourself)"
   echo "     -s <summary>               Short description (put in quotes!)"
+  echo "     -s2aparms \"parms\"	Additional parameters to pass to spec2arch
   echo "     -sdeb			Make Debian source package (*.sdeb)"
   echo "     -section <section>         Make separate *.dspec file with given section"
   echo "     -speconly                  Only create the SPEC file and exit, no build"
@@ -315,6 +317,7 @@ while [ "$1" != "" ] ; do
     -rpm) MKRPM=1;;
     -rpmopt) shift; RPMOPTS=$1;;
     -s) shift; SUMMARY=$1;;
+    -s2aparms) shift; S2APARMS="$1";;
     -sdeb) MKSDEB=1;;
     -section) shift; SECTION=$1;;
     -speconly) SPECONLY=1;;
@@ -482,7 +485,7 @@ rm -f $TMPFILE
 #---------------------------------------------------[ Create PKGBUILD file ]---
 if [ $PKGBUILD -gt 0 -a $MKTAR -gt 0 ]; then
   say "${blue}* Generating PKGBUILD file$NC"
-  $SPEC2ARCH $SPECFILE ${BUILDDEB}/BUILD/${PROG}-${VERSION}/PKGBUILD
+  $SPEC2ARCH $SPECFILE ${BUILDDEB}/BUILD/${PROG}-${VERSION}/PKGBUILD $S2APARMS
 fi
 
 #---------------------------------------------------------[ create tarball ]---
