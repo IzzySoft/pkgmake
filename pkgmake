@@ -510,9 +510,9 @@ if [ $MKSRPM -eq 0 ]; then RPMPARM="-bb"; else RPMPARM="-ba"; fi
   [ $MKDEB -gt 0 ] && say
   say "${blue}* Running ${RPMBUILD}$NC"
   case "$SILENT" in
-    1)   eval "$RPMBUILD $RPMOPTS $RPMPARM $SPECFILE >/dev/null" ;;
-    2|3) eval "$RPMBUILD $RPMOPTS $RPMPARM $SPECFILE &>/dev/null" ;;
-    *)   eval "$RPMBUILD $RPMOPTS $RPMPARM $SPECFILE" ;;
+    1)   eval "$RPMBUILD $RPMPARM $RPMOPTS $SPECFILE >/dev/null" ;;
+    2|3) eval "$RPMBUILD $RPMPARM $RPMOPTS $SPECFILE &>/dev/null" ;;
+    *)   eval "$RPMBUILD $RPMPARM $RPMOPTS $SPECFILE" ;;
   esac
 }
 [ $RMSPEC -gt 0 ] && rm -f $SPECFILE
