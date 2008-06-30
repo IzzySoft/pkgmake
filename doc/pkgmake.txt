@@ -133,6 +133,8 @@ find more information in the manpage for pkgmake.tpl(5).
 For information on the development as well as availability of new versions, you
 may want to visit the authors website, more precisely:
   http://www.izzysoft.de/?topic=software
+or the project site:
+  http://projects.izzysoft.de/trac/pkgmake
 or the project page on Freshmeat:
   http://freshmeat.net/projects/pkgmake
 On the first mentioned page, you will also find more information about other

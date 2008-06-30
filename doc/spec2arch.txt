@@ -1,0 +1,131 @@
+===============================================================================
+ArchLinux PKGBUILD script generator                 (c) 2007 by Itzchak Rehberg
+-------------------------------------------------------------------------------
+$Id$
+-------------------------------------------------------------------------------
+Create PKGBUILD files from RPM SPEC files
+===============================================================================
+
+Contents
+--------
+
+1) Copyright and warranty
+2) Requirements
+3) Limitations
+4) What is spec2arch, and what does it do?
+5) Installation
+6) Usage
+7) Additional information
+
+===============================================================================
+
+1) Copyright and Warranty
+-------------------------
+
+This little program is (c)opyrighted by Andreas Itzchak Rehberg
+(devel@izzysoft.de) and protected by the GNU Public License Version 2 (GPL).
+For details on the License see the file LICENSE in this directory. The
+contents of this archive may only be distributed all together.
+
+===============================================================================
+
+2) Requirements
+---------------
+
+For a stand-alone use of this script, there are no special requirements:
+Everything needed should be part of the systems essential packages. To be sure
+it's all there: You will need Bash, sed, awk.
+
+===============================================================================
+
+3) Limitations
+---------------
+
+We cannot and do not guarantee the resulting PKGBUILD files will be working or
+even perfect, and 100% fulfilling all specifications as given by the ArchLinux
+documentation. Hell, we can't even say they will be useful at all :) Honestly:
+With too complex .spec files, spec2arch will certainly fail. With easy ones, it
+may even work out of the box. And in between it's up to you to tweak the config
+to let the script do what you want - and from time to time you have to "finalize"
+the results manually. But at least a bunch of work the script will do for you
+automatically, and provide you a good starting point.
+
+===============================================================================
+
+4) What is spec2arch, and what does it do?
+------------------------------------------
+
+pkgmake is just a simple shell script to generate ArchLinux PKGBUILD scripts
+from RPM *.spec files. It will extract the information from there, and re-order
+it, so it (rawly) matches the specifications. At the end of the process, it
+usually calls the editor to let you refine the results.
+
+So after all, it should ease you the process of creating a PKGBUILD file for
+software not yet contained in the ArchLinux repositories.
+
+Its target is to be simple to use, and save the developer from the need to
+study all the details and specifications concerning the package management
+with RPM and makepkg. However, some basic knowledge of the latter will still
+be required to create working PKGBUILD files.
+
+===============================================================================
+
+5) Installation and configuration
+---------------------------------
+
+If you are running an RPM or Debian system, spec2arch is installed with the
+pkgmake package. On ArchLinux, it will also be part of the pkgtools by
+Daenyth <Daenyth+Arch AT gmail DOT com> (see
+http://aur.archlinux.org/packages.php?ID=17941), who contributed a big deal
+to make this script working (without him, it would not be there - at least
+not yet).
+
+If you have neither of those available, you may download and unpack the latest
+tarball of pkgmake, and either run "make install" (read install.txt first):
+Check the path specifications at the top of the Makefile (they should be fine
+for Ubuntu and most likely other Debian derivates), and finally simply run
+"sudo make install" (see doc/install.txt for more details on this way of
+[un]installation).
+
+Alternatively, put the spec2arch executable somewhere in your path, create
+a directory $HOME/.pkgmake and copy the spec2arch.conf there. Optionally
+copy the man pages to where they belong - they might be helpful for you.
+
+Finally edit the settings in the spec2arch.conf file to reflect your
+configuration. You can also put a system wide config in /etc/pkgmake/spec2arch.conf
+Spec2arch reads the configuration in the order internal - /etc/pkgmake/ -
+./.pkgmake/ - each time overwriting the old settings with the new definitions
+(if any).
+
+===============================================================================
+
+6) Usage
+--------
+
+For a quick start: Simply run spec2arch without parameters to see its syntax
+plus some examples of its usage. Usually, this should provide you with enough
+information to get started. However, some hints may be needed and useful -
+and they are to be found in the man pages:
+
+After successfully installing the package, more information can be found
+calling "man spec2arch" and "man spec2arch.conf".
+
+===============================================================================
+
+7) Additional Information
+-------------------------
+
+To get more detailed information on the syntax of command line parameters,
+please refer to the manpage of spec2arch(8). For the config file, there is a
+manpage available for spec2arch.conf(5).
+
+For information on the development as well as availability of new versions, you
+may want to visit the authors website, more precisely:
+  http://www.izzysoft.de/?topic=software
+or the project site:
+  http://projects.izzysoft.de/trac/pkgmake
+or the project page on Freshmeat:
+  http://freshmeat.net/projects/pkgmake
+On the first mentioned page, you will also find more information about other
+programs written by the author - as you will on Freshmeat when visiting
+  http://freshmeat.net/~izzysoft/
