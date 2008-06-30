@@ -243,7 +243,9 @@ while read line; do
 done<$SPECFILE
 BACKS=$(sed -n '/^%config/p' $SPECFILE|sed 's/%config(noreplace)//;s/%config(replace)//;s/%config//')
 for BAK in $BACKS; do
-  BACKUP="${BACKUP} '$(trim "$BAK")'"
+  BAK=$(trim "$BAK")
+  [ "${BAK:0:1}" = "/" ] && BAK=${BAK:1}
+  BACKUP="${BACKUP} '$BAK'"
 done
 BACKUP=$(trim "$BACKUP")
 
