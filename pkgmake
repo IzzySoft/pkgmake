@@ -118,7 +118,7 @@ function help {
   echo "     -q	                        Be Quiet (subprocesses)"
   echo "     -Q	                        Be Quiet (ourself)"
   echo "     -s <summary>               Short description (put in quotes!)"
-  echo "     -s2aparms \"parms\"	Additional parameters to pass to spec2arch
+  echo "     -s2aparms \"parms\"	Additional parameters to pass to spec2arch"
   echo "     -sdeb			Make Debian source package (*.sdeb)"
   echo "     -section <section>         Make separate *.dspec file with given section"
   echo "     -speconly                  Only create the SPEC file and exit, no build"
