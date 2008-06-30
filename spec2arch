@@ -146,9 +146,12 @@ function output() {
   [ -n "$BACKUP" ] && echo "backup=($(trim "$BACKUP"))"
   [ -n "$SRC_BASEURL" -a "${SRC_BASEURL:${#SRC_BASEURL}-1}" != "/" ] && SRC_BASEURL="${SRC_BASEURL}/"
   echo "source=($SRC_BASEURL\$pkgname-\$pkgver.tar.gz)"
-  echo
-  echo -e "build() {$BUILD"
-  echo "}"
+  [ -n "$BUILD" ] && {
+    echo
+    echo "build() {"
+    echo -e "  cd \$startdir/src/\$pkgname-\$pkgver${BUILD}"
+    echo "}"
+  }
   echo "# vim: set ts=2 sw=2 et:"
 }
 
@@ -237,15 +240,12 @@ while read line; do
     esac
     continue
   }
-  pat=$(echo "$line"|egrep -i "^%config")
-  [ -n "$pat" ] && {
-    VAR=$(echo "$line"|awk '{print $1}')
-    VLEN=${#VAR}
-    VAL=$(trim "${line:$VLEN+1}")
-    BACKUP="${BACKUP} '$VAL'"
-    continue
-  }
 done<$SPECFILE
+BACKS=$(sed -n '/^%config/p' $SPECFILE|sed 's/%config(noreplace)//;s/%config(replace)//;s/%config//')
+for BAK in $BACKS; do
+  BACKUP="${BACKUP} '$(trim "$BAK")'"
+done
+BACKUP=$(trim "$BACKUP")
 
 output >$OUTFILE
 
