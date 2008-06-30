@@ -17,6 +17,7 @@ SRC_BASEURL=""
 USE_WARNING=1
 OVERWRITE_TARGET=0
 DO_BUILD_REPLACE=0
+EDIT_PKGBUILD=1
 
 #=========================================================[ Initialization ]===
 #-----------------------------------------------------------[ Syntax Check ]---
@@ -33,11 +34,16 @@ function syntax() {
   echo "where <specfile> is the RPM .spec file to process, and <outfile> the"
   echo "resulting PKGBUILD file. Available options:"
   echo
-  echo "-w	do not put the warning in the PKGBUILD file"
-  echo "+w	put the warning in the PKGBUILD file"
+  echo "-b	don't run the BUILD_REPLACE"
+  echo "+b	force running the BUILD_REPLACE"
+  echo "-e	do not call the editor on the created PKGBUILD file"
+  echo "+e	call the editor on the PKGBUILD file when it's created"
   echo "-o	don't overwrite target if exists"
   echo "+o	overwrite target if exists"
+  echo "-w	do not put the warning in the PKGBUILD file"
+  echo "+w	put the warning in the PKGBUILD file"
   echo "--baseurl <baseurl>	set SRC_BASEURL to <baseurl>"
+  echo "--editor <editor>	use <editor> to manually edit the PKGBUILD file"
   echo
   exit $EL
 }
@@ -58,11 +64,14 @@ while [ "$1" != "" ] ; do
   case "$1" in
     -b) DO_BUILD_REPLACE=0;;
     +b) DO_BUILD_REPLACE=1;;
+    -e) EDIT_PKGBUILD=0;;
+    +e) EDIT_PKGBUILD=1;;
     -o) OVERWRITE_TARGET=0;;
     +o) OVERWRITE_TARGET=1;;
     -w) USE_WARNING=0;;
     +w) USE_WARNING=1;;
     --baseurl) shift; SRC_BASEURL="$1";;
+    --editor) shift; EDITOR="$1";;
   esac
   shift
 done
@@ -249,6 +258,8 @@ for BAK in $BACKS; do
 done
 BACKUP=$(trim "$BACKUP")
 
+#---------------------------------------------------[ Create PKGBUILD file ]---
 output >$OUTFILE
+[ $EDIT_PKGBUILD -ne 0 ] && $EDITOR $OUTFILE
 
 #------------------------------------------------------------------[ Done. ]---

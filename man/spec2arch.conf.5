@@ -1,4 +1,4 @@
-.TH "SPEC2ARCH.CONF" "5" "29 June 2008"
+.TH "SPEC2ARCH.CONF" "5" "30 June 2008"
 .SH "NAME" 
 spec2arch.conf.conf \- Configuration file for \fBspec2arch\fR, which creates
 ArchLinux PKGBUILD files from RPM spec files
@@ -46,6 +46,16 @@ There are no defaults.
 .IP "\fBDO_BUILD_REPLACE\fR"
 Whether we should apply the changes defined by \fIBUILD_REPLACE\fR and
 \fIBUILD_REPLACED\fR (1) or not (0 - default).
+
+.IP "\fBEDIT_PKGBUILD\fR"
+Shall we invoke the editor after creating the PKGBUILD files to apply manual
+changes (1, default) or not (0)? Unless you are sure the resulting file will
+be fine (or adjustments should be done later), you should manually
+post-process the created PKGBUILD file to make sure it is OK.
+
+.IP "\fBEDITOR\fR"
+Which editor shall be used (to edit the PKGBUILD file if EDIT_PKGBUILD=1)? By
+default, spec2arch will use the editor defined by the system variable $EDITOR.
 
 .SH "SEE ALSO" 
 .PP 
