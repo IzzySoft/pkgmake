@@ -227,9 +227,10 @@ ENDCHECK
       echo "PKGBUILD file looks OK - no errors reported by namcap."
     fi
     echo
-    [ $CHECK_OK -ne 0 -a $EDIT_PKGBUILD -ne 0 ] && {
+    [ $CHECK_OK -ne 1 -a $EDIT_PKGBUILD -ne 0 ] && {
       echo "We could invoke the editor again for you to fix the issue, and re-run the"
       echo -n "check. Would you like to do so (y/n)? "
+      readyn
       [ $rd -eq 1 ] && {
         $EDITOR $OUTFILE
 	check_namcap
