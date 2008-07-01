@@ -18,6 +18,7 @@ USE_WARNING=1
 OVERWRITE_TARGET=0
 DO_BUILD_REPLACE=0
 EDIT_PKGBUILD=1
+USE_NAMCAP=1
 
 #=========================================================[ Initialization ]===
 #-----------------------------------------------------------[ Syntax Check ]---
@@ -38,6 +39,8 @@ function syntax() {
   echo "+b	force running the BUILD_REPLACE"
   echo "-e	do not call the editor on the created PKGBUILD file"
   echo "+e	call the editor on the PKGBUILD file when it's created"
+  echo "-n	don't check with namcap.py"
+  echo "+n	check with namcap.py"
   echo "-o	don't overwrite target if exists"
   echo "+o	overwrite target if exists"
   echo "-w	do not put the warning in the PKGBUILD file"
@@ -66,6 +69,8 @@ while [ "$1" != "" ] ; do
     +b) DO_BUILD_REPLACE=1;;
     -e) EDIT_PKGBUILD=0;;
     +e) EDIT_PKGBUILD=1;;
+    -n) USE_NAMCAP=0;;
+    +n) USE_NAMCAP=1;;
     -o) OVERWRITE_TARGET=0;;
     +o) OVERWRITE_TARGET=1;;
     -w) USE_WARNING=0;;
@@ -113,6 +118,21 @@ EXCLUS=$(cat "$SPECFILE"|tr [:upper:] [:lower:]|sed -n '/^exclusiveos/p')
 #exclusivearch
 
 #===========================================================[ Helper Funcs ]===
+#---------------------------------------------------------[ Read Y/N input ]---
+function readyn() {
+  read -n 1 rd
+  echo
+  rd=`echo $rd|tr [:upper:] [:lower:]`
+  if [ "$rd" = "y" -o "$rd" = "j" ]; then
+    rd=1
+  elif [ "$rd" = "n" ]; then
+    rd=0
+  else
+    echo -n "Please enter 'y' for 'yes', 'n' for 'no' - or press Ctrl-C to abort: "
+    readyn
+  fi
+}
+
 #-------------------------------[ Remove leading and trailing white spaces ]---
 function trim() {
   echo "$1"|sed 's/^\s*//;s/\s*$//'
@@ -186,6 +206,36 @@ function buildPrep() {
 }
 function buildReplace() {
   echo "$1"|sed "$BUILD_REM_SED"|sed "$BUILD_REP_SED"
+}
+
+#---------------------------------------------------[ Check with namcap.py ]---
+function check_namcap() {
+  local CHECK_OK=0
+  [ -n "$(which namcap.py)" ] && {
+    CHECK=$(namcap.py $OUTFILE 2>/dev/null)
+    RC=$?
+    echo
+    if [ -n "$CHECK" ]; then
+      cat<<ENDCHECK
+$CHECK
+ENDCHECK
+    elif [ $RC -ne 0 ]; then
+      echo "Looks like namcap crashed. Better check the PKGBUILD file again for typos!"
+      sleep 3
+    else
+      CHECK_OK=1
+      echo "PKGBUILD file looks OK - no errors reported by namcap."
+    fi
+    echo
+    [ $CHECK_OK -ne 0 -a $EDIT_PKGBUILD -ne 0 ] && {
+      echo "We could invoke the editor again for you to fix the issue, and re-run the"
+      echo -n "check. Would you like to do so (y/n)? "
+      [ $rd -eq 1 ] && {
+        $EDITOR $OUTFILE
+	check_namcap
+      }
+    }
+  }
 }
 
 #=======================================================[ Parse Input File ]===
@@ -272,22 +322,6 @@ BACKUP=$(trim "$BACKUP")
 #----------------------------------------[ Create and verify PKGBUILD file ]---
 output >$OUTFILE
 [ $EDIT_PKGBUILD -ne 0 ] && $EDITOR $OUTFILE
-[ -n "$(which namcap.py)" ] && {
-  CHECK=$(namcap.py $OUTFILE 2>/dev/null)
-  RC=$?
-  echo
-  if [ -n "$CHECK" ]; then
-    cat<<ENDCHECK
-$CHECK
-ENDCHECK
-  elif [ $RC -ne 0 ]; then
-    echo "Looks like namcap crashed. Better check the PKGBUILD file again for typos!"
-    sleep 3
-    $EDITOR $OUTFILE
-  else
-    echo "PKGBUILD file looks OK - no errors reported by namcap."
-  fi
-  echo
-}
+[ $USE_NAMCAP -ne 0 ] && check_namcap
 
 #------------------------------------------------------------------[ Done. ]---

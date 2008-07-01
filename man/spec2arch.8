@@ -49,6 +49,14 @@ Do not invoke the editor with the PKGBUILD file once it is created
 Invoke the editor with the PKGBUILD file once it is created
 (overwrites EDIT_PKGBUILD setting)
 
+.IP "\fB-n\fR"
+Don't check the generated PKGBUILD file with namcap.py - even if the config
+says USE_NAMCAP=1 and namcap.py is found in the $PATH
+
+.IP "\fB+n\fR"
+Check the generated PKGBUILD file with namcap.py - even if the config says
+USE_NAMCAP=0. Does only have effect if namcap.py can be found in the $PATH
+
 .IP "\fB-o\fR"
 Don't overwrite target if exists (overwrites config setting
 \fIOVERWRITE_TARGET\fR)

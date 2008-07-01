@@ -1,4 +1,4 @@
-.TH "SPEC2ARCH.CONF" "5" "30 June 2008"
+.TH "SPEC2ARCH.CONF" "5" "01 July 2008"
 .SH "NAME" 
 spec2arch.conf.conf \- Configuration file for \fBspec2arch\fR, which creates
 ArchLinux PKGBUILD files from RPM spec files
@@ -62,6 +62,11 @@ post-process the created PKGBUILD file to make sure it is OK.
 .IP "\fBEDITOR\fR"
 Which editor shall be used (to edit the PKGBUILD file if EDIT_PKGBUILD=1)? By
 default, spec2arch will use the editor defined by the system variable $EDITOR.
+
+.IP "\fBUSE_NAMCAP\fR"
+If namcap.py is found in the $PATH, shall it be used to verify the generated
+PKGBUILD file (1 - default) or not (0)? It is recommended to use this tool
+to detect possible problems.
 
 .SH "SEE ALSO" 
 .PP 
