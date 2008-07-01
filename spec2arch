@@ -231,10 +231,15 @@ ENDCHECK
       echo "We could invoke the editor again for you to fix the issue, and re-run the"
       echo -n "check. Would you like to do so (y/n)? "
       readyn
-      [ $rd -eq 1 ] && {
+      if [ $rd -eq 1 ]; then
         $EDITOR $OUTFILE
 	check_namcap
-      }
+      else
+        echo "The generated PKGBUILD file seems to have errors. Do you still want to"
+	echo -n "keep it (y/n)? Otherwise it will be removed. "
+	readyn
+	[ $rd -eq 0 ] && rm -f $OUTFILE
+      fi
     }
   }
 }
