@@ -1,4 +1,4 @@
-.TH spec2arch 8 "30 June 2008"
+.TH spec2arch 8 "01 July 2008"
 .IX spec2arch
 .SH NAME
 RPM SpecFile to ArchLinux PKGBUILD converter
@@ -13,7 +13,10 @@ RPM SpecFile to ArchLinux PKGBUILD converter
 spec2arch does a raw "convert" from a given .spec file to an ArchLinux
 PKGBUILD file. The resulting file will rarely be that perfect to use it
 straight ahead, and will at least need to be reviewed if not even corrected -
-but it will make it much easier to get started with it.
+but it will make it much easier to get started with it. For these corrections,
+you can specify to call the editor after the auto-create has been finished
+(default) - and additionally, namcap.py will be called to verify after that,
+if it's found in the $PATH.
 
 spec2arch will most probably fail with too complex .spec files. But for "easy
 packages", you may successfully use it in conjunction with \fBpkgmake\fR, and
