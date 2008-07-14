@@ -1,4 +1,4 @@
-.TH spec2arch 8 "01 July 2008"
+.TH spec2arch 8 "14 July 2008"
 .IX spec2arch
 .SH NAME
 RPM SpecFile to ArchLinux PKGBUILD converter
@@ -80,6 +80,10 @@ Set SRC_BASEURL to <baseurl> (overwrites config setting
 .IP "\fB--editor <editor>\fR"
 Define the editor to use to edit the created PKGBUILD file for manual control
 (overwrites the EDITOR config setting)
+
+.IP "\fB--md5of <filespec>\fR"
+Calculate md5sums of the given file(s). If you need to specify multiple files,
+you must separate them by colons (e.g. "file1.ext:file2.ext").
 
 .SH "EXAMPLES"
 # Simple call - use settings from the config only
