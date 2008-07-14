@@ -3,7 +3,7 @@ $Id$
 History for pkgmake
 ===================
 
-0.1.8
+v0.1.8 (14.07.2008)
 -------------------
 + added script to create a basic PKGBUILD file (for ArchLinux) from .spec
 + integrated spec2arch into the pkgmake process. This includes a few new
