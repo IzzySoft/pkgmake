@@ -1,4 +1,4 @@
-.TH pkgmake 8 "30 June 2008"
+.TH pkgmake 8 "14 July 2008"
 .IX pkgmake
 .SH NAME
 pkgmake - create RPM spec files and build *.rpm/*.deb packages
@@ -31,6 +31,7 @@ Available options:
 .RB [ "-nonukecvs" ]
 .RB [ "-p \fIpackager\fR" ]
 .RB [ "-pkgbuild" ]
+.RB [ "-pkgbuildfile \fIfilename\fR" ]
 .RB [ "-prov \fI'provides what'\fR" ]
 .RB [ "-r \fIrelease\fR" ]
 .RB [ "-req \fI'requires what'\fR" ]
@@ -166,7 +167,14 @@ The packager - you, if you build the package. Same rules as with \fB-a\fR
 
 .IP "\fB-pkgbuild\fR"
 Create the PKGBUILD file for ArchLinux and include it in the distribution
-tarball - even if the config says PKGBUILD=0
+tarball - even if the config says PKGBUILD=0. To create it at a different
+location instead, use \fB-pkgbuildfile <filename>\fR.
+
+.IP "\fB-pkgbuildfile <filename>\fR"
+Create the ArchLinux PKGBUILD file at the specified location. Implies that you
+want to create it, so you don't need to specify \fB-pkgbuild\fR additionally.
+\fB<filename>\fR should be the full path and file name where to store the resulting
+PKGBUILD file.
 
 .IP "\fB-prov\fR"
 What the package provides. This could be either the names of the main executables,

@@ -111,6 +111,7 @@ function help {
   echo "     -notar                     Don't create the tarball (i.e. it's already there)"
   echo "     -p <packager>              Packager for this package (default: ${PACKAGER})"
   echo "     -pkgbuild			Create the ArchLinux PKGBUILD file even if PKGBUILD=0"
+  echo "     -pkgbuildfile <file>	Create PKGBUILD file at the specified location"
   echo "     -prov <provides>           Space separated list of provides"
   echo "     -r <release>               Release of this version (default: ${RELEASE})"
   echo "     -req <requires>            Space separated list of required packages"
@@ -307,8 +308,9 @@ while [ "$1" != "" ] ; do
     -nosdeb) MKSDEB=0;;
     -nosrpm) MKSRPM=0;;
     -notar) MKTAR=0;;
-    -p) shift; PACKAGER=$1;;
+    -p) shift; PACKAGER="$1";;
     -pkgbuild) PKGBUILD=1;;
+    -pkgbuildfile) shift; PKGBUILD=1; PKGBUILDFILE="$1";;
     -prov) shift; PROV=$1;;
     -q) [ $SILENTc -lt 2 ] && let SILENTc=$SILENT+1;;
     -Q) QUIET=1;;
@@ -485,7 +487,8 @@ rm -f $TMPFILE
 #---------------------------------------------------[ Create PKGBUILD file ]---
 if [ $PKGBUILD -gt 0 -a $MKTAR -gt 0 ]; then
   say "${blue}* Generating PKGBUILD file$NC"
-  $SPEC2ARCH $SPECFILE ${BUILDDEB}/BUILD/${PROG}-${VERSION}/PKGBUILD $S2APARMS
+  [ -z "$PKGBUILDFILE" ] && PKGBUILDFILE="${BUILDDEB}/BUILD/${PROG}-${VERSION}/PKGBUILD"
+  $SPEC2ARCH $SPECFILE $PKGBUILDFILE $S2APARMS
 fi
 
 #---------------------------------------------------------[ create tarball ]---
