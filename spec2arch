@@ -294,7 +294,7 @@ while read line; do
       "summary") PKGDESC="$VAL";;
       "version") PKGVER=$VAL;;
       "name") PKGNAME=$VAL;;
-      "release") PKGREL=$VAL;;
+      "release") PKGREL=$(echo $VAL|sed 's/[^0-9]//g');;
       "license") LICENSE="$VAL";;
       #"group") GROUP="$VAL";; # Arch's group tag is not used in the same way. Arch groups are similar in concept to metapackages.
       # "source") SOURCE="${SRC_BASEURL}/$VAL";;
