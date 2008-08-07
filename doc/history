@@ -3,6 +3,11 @@ $Id$
 History for pkgmake
 ===================
 
+v0.1.9
+-------------------
+* spec2arch: adding variable CONFNAME so the script can be easily adapted for
+  Daenyth' pkgtools package
+
 v0.1.8 (14.07.2008)
 -------------------
 + added script to create a basic PKGBUILD file (for ArchLinux) from .spec
